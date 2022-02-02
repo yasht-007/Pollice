@@ -24027,14 +24027,41 @@
   },
   "networks": {
     "5777": {
-      "events": {},
+      "events": {
+        "0xf0ce107ec698c580107b76d105703777cc84c54588994810fb2b4edd757d141b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "currentStateName",
+              "type": "string"
+            }
+          ],
+          "name": "electionState",
+          "type": "event"
+        },
+        "0xcbc2564db2c306c29c9359ee01a887d712724b8230471b19dd0cfb02b1e04e83": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "name": "electionVoteUpdate",
+          "type": "event"
+        }
+      },
       "links": {},
-      "address": "0x052b9Ea4a5e423be9680A5104305c533B9d2E577",
-      "transactionHash": "0xf0ed9a509af3f0945bac7cf6ddf1635b1ed4ef7957d394bade14f547d3606a6e"
+      "address": "0x048CC1abbEF01735C2126E8278B7A8d97ceb79E1",
+      "transactionHash": "0x835cd6ce57cbf97de1544bd6027712e8d3cd8f869ef9888d06d17aed697ba902"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-01-28T09:01:29.213Z",
+  "updatedAt": "2022-02-01T17:28:55.988Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

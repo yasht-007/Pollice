@@ -1,15 +1,18 @@
 const express = require("express");
 const app = express();
+const dotenv = require("dotenv");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const User = require("./models/user.modal");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const connectDB = require("./config/db");
 
+dotenv.config();
+connectDB();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb://127.0.0.1:27017/blockchain-election");
+// mongoose.connect("mongodb://127.0.0.1:27017/blockchain-election");
 
 app.post("/api/register", async (req, res) => {
   console.log(req.body);
@@ -85,6 +88,8 @@ app.post("/api/login", async (req, res) => {
 //   }
 // });
 
-app.listen(1337, () => {
-  console.log("Sever started on 1337");
+const PORT = process.env.PORT || 1337;
+
+app.listen(PORT, () => {
+  console.log(`Sever started on PORT ${PORT}`);
 });
