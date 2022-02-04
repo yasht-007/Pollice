@@ -16,24 +16,22 @@ import { Button } from "../ButtonElement";
 import { ElectionState } from "../../ElectionContext";
 
 const HeroSection = () => {
-  // const [hover, setHover] = useState(false);
-  // const onHover = () => {
-  //   setHover(!hover);
-  // };
   const { account } = ElectionState();
   const [voter, setVoter] = useState(false);
+  const [name, setName] = useState("");
   const history = useNavigate();
   const walletAddress = account.address;
 
   useEffect(() => {
     window.WriteItJS.startAnimationOfNode("#first");
-  });
+  },[]);
 
   useEffect(() => {
     if (account.wallet) {
       checkVoterStatus();
     } // eslint-disable-next-line
   }, [account]);
+
 
   const checkVoterStatus = async () => {
     const response = await fetch("http://localhost:1337/api/voterstatus", {
@@ -50,6 +48,7 @@ const HeroSection = () => {
     const data = await response.json();
     if (data.status === "ok") {
       setVoter(true);
+      setName(data.voterName);
     } else {
       setVoter(false);
     }
@@ -75,12 +74,30 @@ const HeroSection = () => {
             Pollice
           </p>
         </HeroH1>
-        <HeroP>
-          Let's connect your metamask wallet to enter the world of Blockchain
-          based voting.
-        </HeroP>
+        {voter && account.wallet ? (
+          <HeroP>
+            Welcome {name} you are in the world of Blockchain based voting. Hurrah! You are now eligible to vote.
+          </HeroP>
+        ) : (
+          <HeroP>
+            Let's connect your metamask wallet to enter the world of Blockchain
+            based voting.
+          </HeroP>
+        )}
+
         <HeroBtnWrapper>
-          {voter && account.wallet ? null : (
+          {voter && account.wallet ? <Button
+              to="aboutus"
+              smooth={true}
+              duration={500}
+              spy={true}
+              exact="true"
+              offset={-80}
+              primary="true"
+              dark="true"
+            >
+              Vote Now {<ArrowRight />}
+            </Button> : (
             <Button
               to="crypto"
               smooth={true}
@@ -89,8 +106,6 @@ const HeroSection = () => {
               exact="true"
               offset={-80}
               onClick={gotToRegister}
-              // onMouseEnter={onHover}
-              // onMouseLeave={onHover}
               primary="true"
               dark="true"
             >

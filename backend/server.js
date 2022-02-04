@@ -37,7 +37,8 @@ app.post("/api/voterstatus", async (req, res) => {
   if (!voter || voter === null) {
     return res.json({ status: "error", error: "Invalid login" });
   } else {
-    return res.json({ status: "ok"});
+    const name = voter.name;
+    return res.json({ status: "ok",voterName:name });
   }
 });
 
