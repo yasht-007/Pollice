@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import Footer from "../components/Footer";
 import HeroSection from "../components/HeroSection";
 import InfoSection from "../components/InfoSection";
@@ -13,7 +13,6 @@ import Navbar from "../components/Navbar";
 import Team from "../components/Team";
 import Banner from "../components/Banner.js";
 
-
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -21,18 +20,20 @@ const Home = () => {
     setIsOpen(!isOpen);
   };
 
-  return <>
-    <Sidebar isOpen={isOpen} toggle={toggle} />
+  return (
+    <>
+      <Sidebar isOpen={isOpen} toggle={toggle} />
       <Navbar toggle={toggle} />
       <HeroSection />
       <Banner />
       <InfoSection {...home0bj0ne} />
       <InfoSection {...home0bjTwo} />
-      <Services /> 
+      <Services />
       <InfoSection {...home0bjThree} />
       <Team />
       <Footer />
-  </>;
+    </>
+  );
 };
 
 export default Home;

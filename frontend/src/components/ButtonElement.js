@@ -36,7 +36,7 @@ export const Buttonsecond = styled(Link)`
   text-decoration: none;
   color: #fff;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 500;
   outline: none;
   width: 150px;
   border: none;
@@ -66,7 +66,8 @@ export const Buttonthird = styled(Link)`
 
   outline: none;
   border: none;
-  width: 150px;
+  width: 90px;
+  height: 35px;
   cursor: pointer;
   display: flex;
   font-weight: 500;
@@ -77,5 +78,33 @@ export const Buttonthird = styled(Link)`
   &:hover {
     transition: all 0.2s ease-in-out;
     background: ${({ primary }) => (primary ? "#fff" : "#01BF71")};
+  }
+
+  @media screen and (max-width: 768px) {
+    text-decoration: none;
+    display: none;
+  }
+`;
+
+export const ButtonOutlined = styled(Link)`
+  background: transparent;
+  border: 1px solid #72f34b;
+  color: #72f34b;
+  padding: 2px 12px;
+  margin-left: 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: none;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background: transparent;
+  }
+
+  @media screen and (max-width: 768px) {
+    text-decoration: none;
+    display: none;
   }
 `;

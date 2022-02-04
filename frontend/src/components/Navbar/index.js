@@ -11,10 +11,20 @@ import {
   NavLinks,
   NavItem,
 } from "./NavbarElements";
-import {Buttonthird} from "../ButtonElement";
+import { Buttonthird, ButtonOutlined } from "../ButtonElement";
+import { ElectionState } from "../../ElectionContext";
+// import Electionabi from "../../contracts/Election.json";
+import DataAddress from "../DataAddress";
+import {
+  checkCorrectNetwork,
+  checkWalletAvailable,
+  getMainBalance,
+  getUserAddress,
+} from "../../config/web3Action";
 
 const Navbar = ({ toggle }) => {
   const [scrollNav, setScrollNav] = useState(false);
+  const { account, setAccount, setAlert } = ElectionState();
 
   const changeNav = () => {
     if (window.scrollY >= 80) {
@@ -30,6 +40,55 @@ const Navbar = ({ toggle }) => {
 
   const toggleHome = () => {
     scroll.scrollToTop();
+  };
+
+  const showAlert = (connect) => {
+    if (connect) {
+      setAlert({
+        open: true,
+        type: "success",
+        message: " Wallet connected !",
+        time: 2000,
+      });
+    } else {
+      setAlert({
+        open: true,
+        type: "success",
+        message: "Wallet discconnected !",
+        time: 2000,
+      });
+    }
+  };
+
+  const connectWallet = async () => {
+
+    let wallet = await checkWalletAvailable();
+    let address = await getUserAddress();
+    let balance = await getMainBalance();
+    let chainID = await checkCorrectNetwork();
+
+    setAccount(
+      {
+        wallet: wallet,
+        chainId: chainID,
+        address: address,
+        balance: balance,
+      },
+      showAlert(true)
+    );
+
+  };
+
+  const disconnectWallet = () => {
+    setAccount(
+      {
+        wallet: false,
+        chainId: "not found",
+        address: "Unavailable",
+        balance: "0",
+      },
+      showAlert(false)
+    );
   };
 
   return (
@@ -71,7 +130,7 @@ const Navbar = ({ toggle }) => {
                   Campaigns
                 </NavLinks>
               </NavItem>
-
+              {/* 
               <NavItem>
                 <NavLinks
                   to="pollice"
@@ -83,7 +142,7 @@ const Navbar = ({ toggle }) => {
                 >
                   FAQ
                 </NavLinks>
-              </NavItem>
+              </NavItem> */}
 
               <NavItem>
                 <NavLinks
@@ -112,18 +171,30 @@ const Navbar = ({ toggle }) => {
               </NavItem>
             </NavMenu>
           </NavbarContainer>
-          <Buttonthird
-            to=""
-            smooth={true}
-            duration={500}
-            spy={true}
-            exact="true"
-            offset={-80}
-            primary="true"
-            dark="true"
-          >
-            Connect Wallet
-          </Buttonthird>
+
+          {account.wallet ? (
+            <DataAddress address={account.address} />
+          ) : (
+            <Buttonthird
+              to="/"
+              smooth={true}
+              duration={500}
+              spy={true}
+              exact="true"
+              offset={-80}
+              onClick={connectWallet}
+              primary="true"
+              dark="true"
+            >
+              Connect
+            </Buttonthird>
+          )}
+
+          {account.wallet ? (
+            <ButtonOutlined to=" " onClick={disconnectWallet}>
+              Log out
+            </ButtonOutlined>
+          ) : null}
         </Nav>
       </IconContext.Provider>
     </>

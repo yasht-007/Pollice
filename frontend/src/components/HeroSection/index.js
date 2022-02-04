@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HeroContainer,
   HeroBg,
@@ -12,16 +13,51 @@ import {
 } from "./HeroElements";
 import Video from "../../videos/video.mp4";
 import { Button } from "../ButtonElement";
+import { ElectionState } from "../../ElectionContext";
 
 const HeroSection = () => {
   // const [hover, setHover] = useState(false);
   // const onHover = () => {
   //   setHover(!hover);
   // };
+  const { account } = ElectionState();
+  const [voter, setVoter] = useState(false);
+  const history = useNavigate();
+  const walletAddress = account.address;
 
   useEffect(() => {
     window.WriteItJS.startAnimationOfNode("#first");
   });
+
+  useEffect(() => {
+    if (account.wallet) {
+      checkVoterStatus();
+    } // eslint-disable-next-line
+  }, [account]);
+
+  const checkVoterStatus = async () => {
+    const response = await fetch("http://localhost:1337/api/voterstatus", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        walletAddress,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.status === "ok") {
+      setVoter(true);
+    } else {
+      setVoter(false);
+    }
+  };
+
+  function gotToRegister() {
+    history("/register");
+  }
 
   return (
     <HeroContainer id="home">
@@ -44,20 +80,23 @@ const HeroSection = () => {
           based voting.
         </HeroP>
         <HeroBtnWrapper>
-          <Button
-            to="crypto"
-            smooth={true}
-            duration={500}
-            spy={true}
-            exact="true"
-            offset={-80}
-            // onMouseEnter={onHover}
-            // onMouseLeave={onHover}
-            primary="true"
-            dark="true"
-          >
-            Connect Wallet {  <ArrowRight />}
-          </Button>
+          {voter && account.wallet ? null : (
+            <Button
+              to="crypto"
+              smooth={true}
+              duration={500}
+              spy={true}
+              exact="true"
+              offset={-80}
+              onClick={gotToRegister}
+              // onMouseEnter={onHover}
+              // onMouseLeave={onHover}
+              primary="true"
+              dark="true"
+            >
+              Register to Vote {<ArrowRight />}
+            </Button>
+          )}
         </HeroBtnWrapper>
       </HeroContent>
     </HeroContainer>

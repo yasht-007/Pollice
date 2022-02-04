@@ -8,7 +8,7 @@ const useStyles = makeStyles(() => ({
     backgroundImage: `url(${BackgroundImage})`,
   },
   bannerContent: {
-    height: 250,
+    height: 280,
     display: "flex",
     flexDirection: "column",
     paddingTop: 0,
