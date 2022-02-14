@@ -19,6 +19,7 @@ import {
   checkCorrectNetwork,
   checkWalletAvailable,
   getMainBalance,
+  getNetworkId,
   getUserAddress,
 } from "../../config/web3Action";
 
@@ -61,22 +62,22 @@ const Navbar = ({ toggle }) => {
   };
 
   const connectWallet = async () => {
-
     let wallet = await checkWalletAvailable();
     let address = await getUserAddress();
     let balance = await getMainBalance();
     let chainID = await checkCorrectNetwork();
+    let networkId = await getNetworkId();
 
     setAccount(
       {
         wallet: wallet,
         chainId: chainID,
+        networkId: networkId,
         address: address,
         balance: balance,
       },
       showAlert(true)
     );
-
   };
 
   const disconnectWallet = () => {
@@ -84,6 +85,7 @@ const Navbar = ({ toggle }) => {
       {
         wallet: false,
         chainId: "not found",
+        netWorkId: "not found",
         address: "Unavailable",
         balance: "0",
       },

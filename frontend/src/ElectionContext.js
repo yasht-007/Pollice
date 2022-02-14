@@ -6,6 +6,7 @@ const ElectionContext = ({ children }) => {
   const [account, setAccount] = useState({
     wallet: false,
     chainId: "not found",
+    networkid: "not found",
     address: "Unavailable",
     balance: "0",
   });
@@ -14,9 +15,9 @@ const ElectionContext = ({ children }) => {
     open: false,
     message: "",
     type: "success",
+    time: 2000,
   });
 
-  
   return (
     <>
       <Election.Provider value={{ account, setAccount, alert, setAlert }}>

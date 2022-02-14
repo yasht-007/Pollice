@@ -20,6 +20,13 @@ export const checkCorrectNetwork = async () => {
   return chainID;
 };
 
+//get correct network Id
+export const getNetworkId = async () => {
+  let netId;
+  netId = await web3.eth.net.getId();
+  return netId;
+};
+
 //Get User Address from Web3
 export const getUserAddress = async () => {
   const accounts = await window.ethereum.request({
