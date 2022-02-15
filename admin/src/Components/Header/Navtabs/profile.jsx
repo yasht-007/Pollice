@@ -26,7 +26,7 @@ export default function Profile() {
   };
 
   const dropDownData = [
-    { label: "Account", icon: <SettingsIcon /> },
+   
     { label: "Logout", icon: <ExitToAppIcon /> },
   ];
 

@@ -7,6 +7,8 @@ const ElectionHost = require("./models/electionHost.modal");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
+const sendEmail = require("./config/sendEmail");
+const sendRejectEmail = require("./config/sendRejectEmail");
 
 dotenv.config();
 connectDB();
@@ -58,6 +60,65 @@ app.post("/api/election/host", async (req, res) => {
     });
 
     res.json({ status: "ok" });
+  } catch (error) {
+    res.json({ status: "error", error: error.message });
+  }
+});
+
+app.get("/api/admin/hosts", async (req, res) => {
+  try {
+    const hosts = await ElectionHost.find(
+      { status: "pending" },
+      {
+        organizationName: 1,
+        _id: 0,
+        email: 1,
+        contactNumber: 1,
+        typeOfOrg: 1,
+        eStartDate: 1,
+        eEndDate: 1,
+        purpose: 1,
+      }
+    );
+    res.json({ status: "ok", hosts: hosts });
+  } catch (error) {
+    res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/admin/approve", async (req, res) => {
+  try {
+    const key = await sendEmail(req.body.email);
+    const apStatus = await ElectionHost.updateOne(
+      { email: req.body.email, status: "pending" },
+      { $set: { status: "approved", accessKey: key } }
+    );
+
+    if (apStatus.modifiedCount >= 1) {
+      res.json({ status: "ok" });
+    } else {
+      res.json({ status: "error" });
+    }
+  } catch (error) {
+    res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/admin/reject", async (req, res) => {
+  try {
+    const statusEmail = await sendRejectEmail(req.body.email);
+
+    if (statusEmail) {
+      const apStatus = await ElectionHost.updateOne(
+        { email: req.body.email, status: "pending" },
+        { $set: { status: "rejected" } }
+      );
+      if (apStatus.modifiedCount >= 1) {
+        res.json({ status: "ok" });
+      } else {
+        res.json({ status: "error" });
+      }
+    }
   } catch (error) {
     res.json({ status: "error", error: error.message });
   }

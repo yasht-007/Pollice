@@ -34,7 +34,7 @@ const HeroSection = () => {
 
 
   const checkVoterStatus = async () => {
-    const response = await fetch("http://localhost:1337/api/voterstatus", {
+    const response = await fetch("http://localhost:5000/api/voterstatus", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

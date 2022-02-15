@@ -207,9 +207,8 @@ const Register = () => {
                 onChange={(e) => setEndDate(e.target.value)}
               />
               <FormLabel htmlFor="for">Purpose of Election : </FormLabel>
-              <FormTextArea
-                placeholder="Enter Purpose here..."
-                maxLength={500}
+              <FormInput
+                type="text"
                 required
                 onChange={(e) => setPurpose(e.target.value)}
               />
