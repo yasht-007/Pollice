@@ -125,10 +125,6 @@ app.post("/api/admin/reject", async (req, res) => {
   }
 });
 
-app.get("/api/isUserAuth", jwtVerify, async (req, res) => {
-  res.send({ status: "ok" });
-});
-
 app.post("/api/host/login", async (req, res) => {
   try {
     const host = await ElectionHost.findOne({
@@ -143,7 +139,48 @@ app.post("/api/host/login", async (req, res) => {
       const token = jwt.sign({ email: req.email }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      return res.json({ status: "ok", token: token });
+
+      var hostDetails = {
+        organizationName: host.organizationName,
+        email: host.email,
+        contactNumber: host.contactNumber,
+        regNo: host.regNo,
+        typeOfOrg: host.typeOfOrg,
+        purpose: host.purpose,
+        address: host.address,
+        eStartDate: host.eStartDate,
+        eEndDate: host.eEndDate,
+      };
+      return res.json({ status: "ok", token: token, host: hostDetails });
+    }
+  } catch (error) {
+    res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/getdata", jwtVerify, async (req, res) => {
+  try {
+    const host = await ElectionHost.findOne({
+      status: "approved",
+      email: req.body.email,
+    });
+
+    if (!host || host === null) {
+      return res.json({ status: "error", error: "Invalid login" });
+    } else {
+      var hostDetails = {
+        organizationName: host.organizationName,
+        email: host.email,
+        contactNumber: host.contactNumber,
+        regNo: host.regNo,
+        typeOfOrg: host.typeOfOrg,
+        purpose: host.purpose,
+        address: host.address,
+        eStartDate: host.eStartDate,
+        eEndDate: host.eEndDate,
+      };
+
+      return res.json({ status: "ok", host: hostDetails });
     }
   } catch (error) {
     res.json({ status: "error", error: error.message });

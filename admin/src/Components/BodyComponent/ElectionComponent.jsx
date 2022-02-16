@@ -91,10 +91,6 @@ export default function ElectionComponent() {
       });
   };
 
-  function demm() {
-    window.alert("I am called");
-  }
-
   return (
     <Box>
       <PageHeader label="requests" />

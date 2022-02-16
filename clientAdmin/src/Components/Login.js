@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Button,
   TextField,
@@ -12,7 +12,6 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { ElectionHostState } from "./HostContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   loginForm: {
@@ -35,7 +34,7 @@ const Login = () => {
   const classes = useStyles();
   const [email, setEmail] = React.useState("");
   const [key, setKey] = React.useState("");
-  const { login, setLogin } = ElectionHostState();
+  const { setLogin,  } = ElectionHostState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,15 +51,8 @@ const Login = () => {
         .then((res) => {
           if (res.data.status === "ok") {
             localStorage.setItem("token", res.data.token);
+            localStorage.setItem("email", email);
             // window.alert("Login Successful");
-
-            // axios.get("http://localhost:5000/api/isUserAuth", {
-            //   headers: {
-            //     "x-access-token": localStorage.getItem("token"),
-            //   },
-            // }).then((res) => {
-            //   console.log(res.data);
-            // });
             setLogin(res.data.token);
           } else {
             window.alert("Invalid login");

@@ -21,6 +21,7 @@ export default function Profile() {
 
   const handleClick = (event) => {
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
     setLogin("");
   };
 
