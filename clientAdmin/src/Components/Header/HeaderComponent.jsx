@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box } from "@material-ui/core";
 import Navbar from "./Navbar";
 import Sidenav from "./Sidenav";
-import { Switch, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Dashboard from "../BodyComponent/Dashboard/Dashboard";
 import ElectionComponent from "../BodyComponent/ElectionComponent";
 import Candidates from "../BodyComponent/Candidates";
@@ -31,14 +31,14 @@ export default function HeaderComponent() {
       />
       {/* // registerian our routes  */}
       <Box className={classes.wrapper}>
-        <Switch>
+        <Routes>
           {/* <Route path='/' component={<Dashboard />} /> */}
-          <Route exact path="/elections" render={() => <ElectionComponent />} />
-          <Route exact path="/candidates" render={() => <Candidates />} />
-          <Route exact path="/voters" render={() => <Voters />} />
-          <Route exact path="/logout" render={() => <Logout />} />
-          <Route exact path="/" render={() => <Dashboard />} />
-        </Switch>
+          <Route exact path="/elections" element={<ElectionComponent />} />
+          <Route exact path="/candidates" element={<Candidates />} />
+          <Route exact path="/voters" element={<Voters />} />
+          <Route exact path="/logout" element={<Logout />} />
+          <Route exact path="/" element={<Dashboard />} />
+        </Routes>
       </Box>
     </div>
   );

@@ -9,6 +9,7 @@ const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
 const sendEmail = require("./config/sendEmail");
 const sendRejectEmail = require("./config/sendRejectEmail");
+const jwtVerify = require("./config/JwtVerify");
 
 dotenv.config();
 connectDB();
@@ -118,6 +119,31 @@ app.post("/api/admin/reject", async (req, res) => {
       } else {
         res.json({ status: "error" });
       }
+    }
+  } catch (error) {
+    res.json({ status: "error", error: error.message });
+  }
+});
+
+app.get("/api/isUserAuth", jwtVerify, async (req, res) => {
+  res.send({ status: "ok" });
+});
+
+app.post("/api/host/login", async (req, res) => {
+  try {
+    const host = await ElectionHost.findOne({
+      status: "approved",
+      email: req.body.email,
+      accessKey: req.body.key,
+    });
+
+    if (!host || host === null) {
+      return res.json({ status: "error", error: "Invalid login" });
+    } else {
+      const token = jwt.sign({ email: req.email }, "vitalikislove", {
+        expiresIn: "1h",
+      });
+      return res.json({ status: "ok", token: token });
     }
   } catch (error) {
     res.json({ status: "error", error: error.message });

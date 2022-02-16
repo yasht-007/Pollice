@@ -11,47 +11,29 @@ import {
 } from "@material-ui/core";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { useStyles } from "../HeaderStyles";
+import { ElectionHostState } from "../../HostContext";
 
 export default function Profile() {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const { setLogin } = ElectionHostState();
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    localStorage.removeItem("token");
+    setLogin("");
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const dropDownData = [
-    { label: "Account", icon: <SettingsIcon /> },
-    { label: "Logout", icon: <ExitToAppIcon /> },
-  ];
 
   return (
     <Box>
       <Button
-        aria-controls='simple-menu'
-        aria-haspopup='true'
+        aria-controls="simple-menu"
+        aria-haspopup="true"
+        style={{ color: "#fff", textTransform: "none" }}
         onClick={handleClick}
-        startIcon={
-          <Avatar src={AccountCircleIcon} className={classes.navAvatar}></Avatar>
-        }></Button>
-      <Menu
-        id='simple-menu'
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}>
-        {dropDownData.map((item, i) => (
-          <MenuItem key={i} component={ListItem} onClick={handleClose}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText>{item.label}</ListItemText>
-          </MenuItem>
-        ))}
-      </Menu>
+      >
+        Log out
+      </Button>
     </Box>
   );
 }
