@@ -55,7 +55,7 @@ export const useStyles = makeStyles((theme) => ({
     width: "100% !important",
     height: "45% !important",
   },
-  
+
   paper: {
     marginTop: "20px",
     background: "#fff",
@@ -68,4 +68,30 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
   },
+
+  ecard: {
+    background: "none",
+    display: "flex",
+    color: "black",
+    flexDirection: "row",
+  },
+
+  epaper: {
+    marginTop: "20px",
+    background: "#fff",
+    color: "black",
+    height: "60vh",
+  },
+
+  ebutton: {
+    marginRight: "10px",
+  },
+
+  ecpaper: {
+    marginTop: "20px",
+    background: "#fff",
+    color: "black",
+    height: "40vh",
+  },
+  
 }));

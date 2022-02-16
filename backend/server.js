@@ -92,7 +92,13 @@ app.post("/api/admin/approve", async (req, res) => {
     const key = await sendEmail(req.body.email);
     const apStatus = await ElectionHost.updateOne(
       { email: req.body.email, status: "pending" },
-      { $set: { status: "approved", accessKey: key } }
+      {
+        $set: {
+          status: "approved",
+          accessKey: key,
+          electionStatus: "Not Active",
+        },
+      }
     );
 
     if (apStatus.modifiedCount >= 1) {
@@ -136,22 +142,8 @@ app.post("/api/host/login", async (req, res) => {
     if (!host || host === null) {
       return res.json({ status: "error", error: "Invalid login" });
     } else {
-      const token = jwt.sign({ email: req.email }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-
-      var hostDetails = {
-        organizationName: host.organizationName,
-        email: host.email,
-        contactNumber: host.contactNumber,
-        regNo: host.regNo,
-        typeOfOrg: host.typeOfOrg,
-        purpose: host.purpose,
-        address: host.address,
-        eStartDate: host.eStartDate,
-        eEndDate: host.eEndDate,
-      };
-      return res.json({ status: "ok", token: token, host: hostDetails });
+      const token = jwt.sign({ email: req.email }, process.env.JWT_SECRET);
+      return res.json({ status: "ok", token: token });
     }
   } catch (error) {
     res.json({ status: "error", error: error.message });
@@ -178,6 +170,7 @@ app.post("/api/host/getdata", jwtVerify, async (req, res) => {
         address: host.address,
         eStartDate: host.eStartDate,
         eEndDate: host.eEndDate,
+        electionStatus: host.electionStatus,
       };
 
       return res.json({ status: "ok", host: hostDetails });

@@ -46,7 +46,7 @@ export default function Dashboard() {
   const DisplayData = [
     {
       label: "Election Status",
-      value: "Active",
+      value: host.data.electionStatus,
       icon: <ArrowDropUpIcon />,
       iconLabel: "4%",
     },
@@ -58,13 +58,13 @@ export default function Dashboard() {
     },
     {
       label: "Voting End Date",
-      value: host.data.eStartDate,
+      value: host.data.eEndDate,
       icon: <ArrowDropUpIcon />,
       iconLabel: "9%",
     },
     {
-      label: "Total Voters",
-      value: randomValueGenerator({ digit: 100 }),
+      label: "Time Deadline",
+      value: "10:00 am",
       icon: <ArrowDropDownIcon />,
       iconLabel: "23%",
     },

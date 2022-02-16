@@ -16,6 +16,7 @@ const HostContext = ({ children }) => {
         address: "",
         eStartDate: "",
         eEndDate: "",
+        electionStatus: "",
       },
     ],
   });

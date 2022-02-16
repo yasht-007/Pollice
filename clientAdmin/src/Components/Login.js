@@ -40,7 +40,8 @@ const Login = () => {
     e.preventDefault();
     if (email === "" || key === "") {
       window.alert("Please fill all the fields");
-    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    } //eslint-disable-next-line
+    else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       window.alert("Email is invalid");
     } else {
       await axios
