@@ -8,8 +8,8 @@ const sendRejectEmail = async (email) => {
     host: "smtp.gmail.com",
     port: 465,
     auth: {
-      user: "elon.muskbtc007@gmail.com",
-      pass: "clyncgvnnqjskdxl",
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 

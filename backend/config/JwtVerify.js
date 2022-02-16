@@ -5,7 +5,7 @@ const jwtVerify = (req, res, next) => {
   if (!token) {
     res.json({ status: "error", error: "No token provided" });
   } else {
-    jwt.verify(token, "vitalikislove", (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         res.json({ status: "error", error: "Invalid token" });
       } else {

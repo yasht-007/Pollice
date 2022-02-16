@@ -11,7 +11,7 @@ const sendEmail = require("./config/sendEmail");
 const sendRejectEmail = require("./config/sendRejectEmail");
 const jwtVerify = require("./config/JwtVerify");
 
-dotenv.config();
+dotenv.config({ path: "../.env" });
 connectDB();
 app.use(cors());
 app.use(express.json());
@@ -140,7 +140,7 @@ app.post("/api/host/login", async (req, res) => {
     if (!host || host === null) {
       return res.json({ status: "error", error: "Invalid login" });
     } else {
-      const token = jwt.sign({ email: req.email }, "vitalikislove", {
+      const token = jwt.sign({ email: req.email }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
       return res.json({ status: "ok", token: token });
