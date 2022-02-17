@@ -135,34 +135,6 @@ export default function ElectionComponent() {
                     onClick: (event, rowData) => rejectHost(rowData.email),
                   },
                 ]}
-                // components={{
-                //   Pagination: (props) => (
-                //     console.log(props),
-                //     (
-                //       <TablePagination
-                //         // ActionsComponent={()=><div>hi...</div>}
-                //         //{...props}
-                //         // labelRowsPerPage={<div>{props.labelRowsPerPage}</div>}
-                //         //labelDisplayedRows={row => <div style={{ color:'green' }}>{props.labelDisplayedRows(row)}</div>}
-                //         component="div"
-                //         colSpan={props.colSpan}
-                //         count={props.count}
-                //         rowsPerPage={props.rowsPerPage}
-                //         page={props.page}
-                //         onChangePage={props.onChangePage}
-                //         onChangeRowsPerPage={this.onChangeRowsPerPage}
-                //         classes={{
-                //           root: classes.root,
-                //           toolbar: classes.toolbar,
-                //           caption: classes.caption,
-                //           selectIcon: classes.selectIcon,
-                //           select: classes.select,
-                //           actions: classes.actions,
-                //         }}
-                //       />
-                //     )
-                //   ),
-                // }}
               />
             </Container>
           </>

@@ -64,4 +64,24 @@ export const useStyles = makeStyles((theme) => ({
     width: " 100%",
     textTransform: "capitalize",
   },
+
+  bannerContent: {
+    display: "flex",
+    flexDirection:"row",
+    alignItems:"center",
+    justifyContent: "center",
+    marginLeft: "20px",
+  },
+  paper: {
+    backgroundColor: "#2e2e2e",
+    borderRadius: "4px",
+  },
+  text: {
+    color: "white",
+    width: "8ch",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  
 }));

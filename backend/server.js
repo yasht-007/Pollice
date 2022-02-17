@@ -180,6 +180,103 @@ app.post("/api/host/getdata", jwtVerify, async (req, res) => {
   }
 });
 
+app.post("/api/host/addcandidate", jwtVerify, async (req, res) => {
+  try {
+    const nameInOrNot = await ElectionHost.findOne({
+      email: req.body.email,
+      candidates: {
+        $elemMatch: {
+          name: req.body.cName,
+        },
+      },
+    });
+
+    const walletInOrNot = await ElectionHost.findOne({
+      email: req.body.email,
+      candidates: {
+        $elemMatch: {
+          walletAddress: req.body.walletAddress,
+        },
+      },
+    });
+
+    if (nameInOrNot !== null || walletInOrNot !== null) {
+      return res.json({ status: "error", error: "Candidate already exist" });
+    } else {
+      const addStatus = await ElectionHost.updateOne(
+        { email: req.body.email, electionStatus: "Not Active" },
+        {
+          $push: {
+            candidates: {
+              name: req.body.cName,
+              walletAddress: req.body.walletAddress,
+            },
+          },
+        }
+      );
+      if (addStatus.modifiedCount >= 1) {
+        res.json({ status: "ok" });
+      } else {
+        res.json({ status: "error" });
+      }
+    }
+  } catch (error) {
+    res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/deletecandidate", jwtVerify, async (req, res) => {
+  try {
+    const deleteIt = await ElectionHost.updateOne(
+      {
+        email: req.body.email,
+        candidates: {
+          $elemMatch: {
+            walletAddress: req.body.walletAddress,
+          },
+        },
+      },
+      {
+        $pull: {
+          candidates: {
+            name: req.body.cName,
+            walletAddress: req.body.walletAddress,
+          },
+        },
+      }
+    );
+
+    if (deleteIt.modifiedCount >= 1) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({ status: "error", error: "Candidate not found" });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/getcandidate", jwtVerify, async (req, res) => {
+  try {
+    const cands = await ElectionHost.findOne(
+      {
+        email: req.body.email,
+      },
+      {
+        candidates: 1,
+      }
+    );
+
+    if (!cands || cands === null) {
+      return res.json({ status: "error", error: "Invalid login" });
+    } else {
+      return res.json({ status: "ok", cand: cands });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

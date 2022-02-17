@@ -21,9 +21,17 @@ const HostContext = ({ children }) => {
     ],
   });
 
+  const [account, setAccount] = useState({
+    wallet: false,
+    chainId: "not found",
+    networkid: "not found",
+    address: "Unavailable",
+    balance: "0",
+  });
+
   return (
     <>
-      <Host.Provider value={{ login, setLogin, host, setHost }}>
+      <Host.Provider value={{ login, setLogin, host, setHost, account, setAccount }}>
         {children}
       </Host.Provider>
     </>
