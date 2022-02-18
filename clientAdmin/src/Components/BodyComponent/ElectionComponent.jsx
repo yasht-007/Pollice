@@ -20,13 +20,22 @@ import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import List from "@material-ui/core/List";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/Person";
+import AccounntBalanceIcon from "@material-ui/icons/AccountBalanceRounded";
+import axios from "axios";
 
 export default function ElectionComponent() {
   const classes = useStyles();
   const { host } = ElectionHostState();
+  const [posts, setPosts] = useState({
+    data: [
+      {
+        name: "",
+        walletAddress: "",
+      },
+    ],
+  });
 
   const DisplayData = [
     {
@@ -62,6 +71,25 @@ export default function ElectionComponent() {
     background: "#fff9d6",
     borderStyle: "solid",
     overflow: "scroll",
+  };
+
+  const getRequests = async () => {
+    await axios
+      .post("http://localhost:5000/api/host/getcandidate", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        email: localStorage.getItem("email"),
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          const cand = res.data.cand;
+          setPosts({ data: cand.candidates });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -157,6 +185,7 @@ export default function ElectionComponent() {
                     See List
                   </Button>
                 }
+                onOpen={() => getRequests()}
                 modal
                 contentStyle={contentStyle}
               >
@@ -175,20 +204,26 @@ export default function ElectionComponent() {
                       Candidate List :-
                     </Typography>
 
-                    <List
-                      sx={{
-                        width: "100%",
-                        maxWidth: 360,
-                        bgcolor: "background.paper",
-                      }}
-                      component="nav"
-                      aria-labelledby="nested-list-subheader"
-                    >
-                      <ListItemIcon>
-                        <InboxIcon />
-                        <ListItemText primary="Yash Manojkumar Tiwari" />
-                      </ListItemIcon>
-                    </List>
+                    {posts.data.map((item, i) => {
+                      return (
+                        <>
+                          <List
+                            sx={{
+                              width: "100%",
+                              maxWidth: 360,
+                              bgcolor: "background.paper",
+                            }}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                          >
+                            <ListItemIcon>
+                              <InboxIcon />
+                              <ListItemText primary={item.name} />
+                            </ListItemIcon>
+                          </List>
+                        </>
+                      );
+                    })}
 
                     <Button
                       variant="outlined"
@@ -227,6 +262,7 @@ export default function ElectionComponent() {
                 }
                 modal
                 contentStyle={contentStyle}
+                onOpen={() => getRequests()}
               >
                 {(close) => (
                   <Container
@@ -243,21 +279,26 @@ export default function ElectionComponent() {
                       Candidate Addresses :-
                     </Typography>
 
-                    <List
-                      sx={{
-                        width: "100%",
-                        maxWidth: 360,
-                        bgcolor: "background.paper",
-                      }}
-                      component="nav"
-                      aria-labelledby="nested-list-subheader"
-                    >
-                      <ListItemIcon>
-                        <InboxIcon />
-                        <ListItemText primary="0x53DD3ef5188bc6218A2651B6855C8E7c2Bd79DF2" />
-                      </ListItemIcon>
-                    </List>
-
+                    {posts.data.map((item, i) => {
+                      return (
+                        <>
+                          <List
+                            sx={{
+                              width: "100%",
+                              maxWidth: 360,
+                              bgcolor: "background.paper",
+                            }}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                          >
+                            <ListItemIcon>
+                              <AccounntBalanceIcon />
+                              <ListItemText primary={item.walletAddress} />
+                            </ListItemIcon>
+                          </List>
+                        </>
+                      );
+                    })}
                     <Button
                       variant="outlined"
                       color="secondary"
