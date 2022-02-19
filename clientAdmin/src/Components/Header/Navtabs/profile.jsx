@@ -45,6 +45,7 @@ export default function Profile() {
       },
       showAlert(true)
     );
+
   };
 
   const disconnectWallet = () => {

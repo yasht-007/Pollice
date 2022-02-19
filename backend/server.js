@@ -10,6 +10,7 @@ const connectDB = require("./config/db");
 const sendEmail = require("./config/sendEmail");
 const sendRejectEmail = require("./config/sendRejectEmail");
 const jwtVerify = require("./config/JwtVerify");
+const deployContract = require("./config/deploy");
 
 dotenv.config({ path: "../.env" });
 connectDB();
@@ -271,6 +272,42 @@ app.post("/api/host/getcandidate", jwtVerify, async (req, res) => {
       return res.json({ status: "error", error: "Invalid login" });
     } else {
       return res.json({ status: "ok", cand: cands });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/deployContract", jwtVerify, async (req, res) => {
+  try {
+    const deployedDetails = deployContract();
+    return res.json({
+      status: "ok",
+      abi: deployedDetails.ABI,
+      bytecode: deployedDetails.bytecode,
+    });
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/setcontractandabi", jwtVerify, async (req, res) => {
+  try {
+    const setContract = await ElectionHost.updateOne(
+      { email: req.body.email },
+      {
+        $set: {
+          abi: req.body.abi,
+          contractAddress: req.body.contractAddress,
+        },
+      }
+    );
+    console.log(setContract);
+
+    if (setContract.modifiedCount >= 1) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({ status: "error" });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });

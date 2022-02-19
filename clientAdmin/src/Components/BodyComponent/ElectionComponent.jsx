@@ -24,10 +24,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/Person";
 import AccounntBalanceIcon from "@material-ui/icons/AccountBalanceRounded";
 import axios from "axios";
+import web3 from "../../utils/web3";
+// import deployContract from "../../utils/deploy";
+const bytes32 = require("bytes32");
 
 export default function ElectionComponent() {
   const classes = useStyles();
-  const { host } = ElectionHostState();
+  const {  account } = ElectionHostState();
   const [posts, setPosts] = useState({
     data: [
       {
@@ -36,6 +39,14 @@ export default function ElectionComponent() {
       },
     ],
   });
+
+  const [ballotName, setBallotName] = useState("");
+  const [proposal, setProposal] = useState("");
+  const [buttonclick, setButtonClick] = useState(false);
+
+  useEffect(() => {
+    getRequests();
+  }, []);
 
   const DisplayData = [
     {
@@ -92,6 +103,104 @@ export default function ElectionComponent() {
       });
   };
 
+  const updateToDatabase = async (abi, contractAddress) => {
+    await axios
+      .post("http://localhost:5000/api/host/setcontractandabi", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        email: localStorage.getItem("email"),
+        abi: abi,
+        contractAddress: contractAddress,
+      })
+      .then((res) => {
+        if (res.data.status === 200) {
+          window.alert("success");
+        } else {
+          window.alert("error");
+        }
+      })
+      .catch((err) => {
+        window.alert(err);
+      });
+  };
+
+  const deployIt = async () => {
+    var abi;
+    if (ballotName === "" || proposal === "") {
+      alert("Please fill all the fields");
+    } else {
+      const cNames = [];
+
+      for (let i = 0; i < posts.data.length; i++) {
+        cNames[i] = bytes32({ input: posts.data[i].name });
+      }
+
+      const cAddresses = [];
+
+      for (let i = 0; i < posts.data.length; i++) {
+        cAddresses[i] = posts.data[i].walletAddress;
+      }
+
+      const deployData = {
+        ballotName: ballotName,
+        proposal: proposal,
+        candidateNames: cNames,
+        candidateAddresses: cAddresses,
+        myWalletAddress: account.address,
+      };
+
+      await axios
+        .post("http://localhost:5000/api/host/deployContract", {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            abi = res.data.abi;
+           // updateToDatabase(abi, res._address);
+
+            const defaultAccount = deployData.myWalletAddress;
+            if (defaultAccount.length !== 42) {
+              alert("Please first connect your wallet");
+            } else {
+              window.alert(
+                "Please wait atleast 40 seconds for the contract to be deployed"
+              );
+
+              const contract = new web3.eth.Contract(res.data.abi);
+              setButtonClick(true);
+              contract
+                .deploy({
+                  data: res.data.bytecode,
+                  arguments: [
+                    deployData.ballotName,
+                    deployData.proposal,
+                    deployData.candidateNames,
+                    deployData.candidateAddresses,
+                  ],
+                })
+                .send({ from: defaultAccount, gas: 5000000 })
+                .on("receipt", (receipt) => {
+                  //event,transactions,contract address will be returned by blockchain
+                })
+                .then((res) => {
+                  window.alert("Contract Deployed Successfully. " + res._address);
+                  setButtonClick(true);
+
+                  updateToDatabase(abi,res._address);
+                })
+                .catch((err) => {
+                  window.alert(err.message);
+                  setButtonClick(false);
+                });
+            }
+          }
+        });
+    }
+  };
+
   return (
     <>
       <Box>
@@ -144,6 +253,7 @@ export default function ElectionComponent() {
                 variant="outlined"
                 style={{ padding: "5px" }}
                 size="small"
+                onChange={(e) => setBallotName(e.target.value)}
               />
             </Grid>
 
@@ -160,6 +270,7 @@ export default function ElectionComponent() {
                 variant="outlined"
                 style={{ padding: "5px", minWidth: "40vw" }}
                 size="small"
+                onChange={(e) => setProposal(e.target.value)}
               />
             </Grid>
 
@@ -324,6 +435,8 @@ export default function ElectionComponent() {
               variant="contained"
               color="primary"
               className={classes.ebutton}
+              disabled={buttonclick}
+              onClick={deployIt}
             >
               Deploy
             </Button>

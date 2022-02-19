@@ -13,9 +13,13 @@
     "cors": "^2.8.5",
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
+    "fs": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.8",
-    "nodemailer": "^6.7.2"
+    "nodemailer": "^6.7.2",
+    "path": "^0.12.7",
+    "solc": "^0.8.12",
+    "web3": "^1.7.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

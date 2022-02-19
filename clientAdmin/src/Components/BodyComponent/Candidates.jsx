@@ -75,7 +75,6 @@ export default function Candidates() {
       .then((res) => {
         if (res.data.status == "ok") {
           window.alert("Added!");
-          console.log(cName);
           setRefreshKey(refreshKey + 1);
           textInput.current.value = "";
           textInput2.current.value = "";
