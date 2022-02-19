@@ -2,6 +2,7 @@ import { Container, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import BackgroundImage from "../images/banner.jpg";
 import { Buttonsecond } from "./ButtonElement";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   banner: {
@@ -31,7 +32,11 @@ const Banner = () => {
     setHover(!hover);
   };
 
-  function handleOpen() {}
+  const go = useNavigate();
+
+  function handleOpen() {
+    go("/electionform");
+  }
 
   return (
     <div className={classes.banner} id="applyforhost">

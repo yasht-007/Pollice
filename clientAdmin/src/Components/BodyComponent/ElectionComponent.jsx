@@ -30,7 +30,7 @@ const bytes32 = require("bytes32");
 
 export default function ElectionComponent() {
   const classes = useStyles();
-  const {  account } = ElectionHostState();
+  const { account } = ElectionHostState();
   const [posts, setPosts] = useState({
     data: [
       {
@@ -114,8 +114,8 @@ export default function ElectionComponent() {
         contractAddress: contractAddress,
       })
       .then((res) => {
-        if (res.data.status === 200) {
-          window.alert("success");
+        if (res.data.status === "ok") {
+          window.alert("Contract Deployed Successfully");
         } else {
           window.alert("error");
         }
@@ -159,7 +159,6 @@ export default function ElectionComponent() {
         .then((res) => {
           if (res.status === 200) {
             abi = res.data.abi;
-           // updateToDatabase(abi, res._address);
 
             const defaultAccount = deployData.myWalletAddress;
             if (defaultAccount.length !== 42) {
@@ -184,12 +183,12 @@ export default function ElectionComponent() {
                 .send({ from: defaultAccount, gas: 5000000 })
                 .on("receipt", (receipt) => {
                   //event,transactions,contract address will be returned by blockchain
+
+                  console.log(receipt.contractAddress);
                 })
                 .then((res) => {
-                  window.alert("Contract Deployed Successfully. " + res._address);
                   setButtonClick(true);
-
-                  updateToDatabase(abi,res._address);
+                  updateToDatabase(abi, res._address);
                 })
                 .catch((err) => {
                   window.alert(err.message);

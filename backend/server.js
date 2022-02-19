@@ -297,12 +297,14 @@ app.post("/api/host/setcontractandabi", jwtVerify, async (req, res) => {
       { email: req.body.email },
       {
         $set: {
-          abi: req.body.abi,
-          contractAddress: req.body.contractAddress,
+          contract: {
+            abi: req.body.abi,
+            contractAddress: req.body.contractAddress,
+          },
+          electionStatus: "Active",
         },
       }
     );
-    console.log(setContract);
 
     if (setContract.modifiedCount >= 1) {
       return res.json({ status: "ok" });
