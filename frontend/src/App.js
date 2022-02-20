@@ -6,16 +6,18 @@ import Alert from "./components/Alert";
 import Registeration from "./pages/Registeration";
 import ElectionForm from "./components/ElectionForm";
 import VerifyHost from "./components/VerifyHost";
+import Election from "./pages/Election";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} exact />
-        <Route path="/register" element={<Registeration />} exact />
-        <Route path="/home" element={<Home />} exact />
-        <Route path="/electionform" element={<ElectionForm />} exact />
-        <Route path="/election/host/admin" element={<VerifyHost />} exact />
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Registeration />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/electionform" element={<ElectionForm />} />
+        <Route path="/election/:_id" element={<Election />} />
+        <Route path="/election/host/admin" element={<VerifyHost />} />
       </Routes>
       <Alert />
     </Router>

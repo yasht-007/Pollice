@@ -1,7 +1,7 @@
 import { Container, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
-import BackgroundImage from "../images/banner.jpg";
-import { Buttonsecond } from "./ButtonElement";
+import BackgroundImage from "../../images/banner.jpg";
+import { Buttonsecond } from "../ButtonElement";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
@@ -9,7 +9,7 @@ const useStyles = makeStyles(() => ({
     backgroundImage: `url(${BackgroundImage})`,
   },
   bannerContent: {
-    height: 280,
+    height: 260,
     display: "flex",
     flexDirection: "column",
     paddingTop: 0,

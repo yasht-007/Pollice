@@ -43,15 +43,21 @@ export default function ElectionComponent() {
   const [ballotName, setBallotName] = useState("");
   const [proposal, setProposal] = useState("");
   const [buttonclick, setButtonClick] = useState(false);
+  const [electionStatus, setElectionStatus] = useState("");
+  const [isEstatusUpdated, setIsEstatusUpdated] = useState(false);
 
   useEffect(() => {
     getRequests();
   }, []);
 
+  useEffect(() => {
+    getElectionStatus();
+  }, [isEstatusUpdated]);
+
   const DisplayData = [
     {
       label: "Election Status",
-      value: "Not Active",
+      value: electionStatus,
       icon: <ArrowDropUpIcon />,
       iconLabel: "4%",
     },
@@ -103,7 +109,30 @@ export default function ElectionComponent() {
       });
   };
 
-  const updateToDatabase = async (abi, contractAddress) => {
+  const getElectionStatus = async () => {
+    await axios
+      .post("http://localhost:5000/api/host/getelectionstatus", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        email: localStorage.getItem("email"),
+      })
+      .then((res) => {
+        if (res.data.status === "ok") {
+          setElectionStatus(res.data.electionStatus);
+          if (res.data.electionStatus === "Deployed") {
+            setButtonClick(true);
+          }
+        } else {
+          window.alert("Error");
+        }
+      })
+      .catch((err) => {
+        window.alert(err);
+      });
+  };
+
+  const updateToDatabase = async (abi, contractAddress, defaultAccount) => {
     await axios
       .post("http://localhost:5000/api/host/setcontractandabi", {
         headers: {
@@ -112,10 +141,12 @@ export default function ElectionComponent() {
         email: localStorage.getItem("email"),
         abi: abi,
         contractAddress: contractAddress,
+        walletAddress: defaultAccount,
       })
       .then((res) => {
         if (res.data.status === "ok") {
           window.alert("Contract Deployed Successfully");
+          setIsEstatusUpdated(true);
         } else {
           window.alert("error");
         }
@@ -188,7 +219,7 @@ export default function ElectionComponent() {
                 })
                 .then((res) => {
                   setButtonClick(true);
-                  updateToDatabase(abi, res._address);
+                  updateToDatabase(abi, res._address, defaultAccount);
                 })
                 .catch((err) => {
                   window.alert(err.message);
@@ -252,6 +283,7 @@ export default function ElectionComponent() {
                 variant="outlined"
                 style={{ padding: "5px" }}
                 size="small"
+                disabled={buttonclick === false ? "" : "disabled"}
                 onChange={(e) => setBallotName(e.target.value)}
               />
             </Grid>
@@ -269,6 +301,7 @@ export default function ElectionComponent() {
                 variant="outlined"
                 style={{ padding: "5px", minWidth: "40vw" }}
                 size="small"
+                disabled={buttonclick === false ? "" : "disabled"}
                 onChange={(e) => setProposal(e.target.value)}
               />
             </Grid>
@@ -286,6 +319,7 @@ export default function ElectionComponent() {
                   <Button
                     variant="contained"
                     color="secondary"
+                    disabled={buttonclick}
                     style={{
                       height: "4ch",
                       marginTop: "10px",
@@ -361,6 +395,7 @@ export default function ElectionComponent() {
                   <Button
                     variant="contained"
                     color="secondary"
+                    disabled={buttonclick}
                     style={{
                       height: "4ch",
                       marginTop: "10px",

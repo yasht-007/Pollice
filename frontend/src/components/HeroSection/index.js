@@ -87,7 +87,7 @@ const HeroSection = () => {
 
         <HeroBtnWrapper>
           {voter && account.wallet ? <Button
-              to="aboutus"
+              to="campaigns"
               smooth={true}
               duration={500}
               spy={true}

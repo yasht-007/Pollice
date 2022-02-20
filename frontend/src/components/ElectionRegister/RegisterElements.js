@@ -185,3 +185,19 @@ export const FormTextArea = styled.textarea`
   color: #000;
   padding: 25px 16px;
 `;
+
+export const TableButton = styled.button`
+  background: orange;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-weight: 400;
+  font-size: 17px;
+  cursor: pointer;
+
+  &:hover{
+    background-color: #fff;
+    color: #000;
+  }
+`;

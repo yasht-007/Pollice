@@ -11,7 +11,7 @@ import Services from "../components/Services";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Team from "../components/Team";
-import Banner from "../components/Banner.js";
+import Electionstats from "../components/Electionstats";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ const Home = () => {
       <Sidebar isOpen={isOpen} toggle={toggle} />
       <Navbar toggle={toggle} />
       <HeroSection />
-      <Banner />
+      <Electionstats />
       <InfoSection {...home0bj0ne} />
       <InfoSection {...home0bjTwo} />
       <Services />

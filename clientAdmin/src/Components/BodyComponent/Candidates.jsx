@@ -80,7 +80,7 @@ export default function Candidates() {
           textInput2.current.value = "";
           textInput1.current.value = "";
         } else {
-          window.alert("Error!");
+          window.alert(res.data.message);
         }
       })
       .catch((err) => {

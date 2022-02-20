@@ -122,7 +122,7 @@ const Navbar = ({ toggle }) => {
               </NavItem>
               <NavItem>
                 <NavLinks
-                  to="applyforhost"
+                  to="campaigns"
                   smooth={true}
                   duration={500}
                   spy={true}

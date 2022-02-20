@@ -42,7 +42,7 @@ app.post("/api/voterstatus", async (req, res) => {
     return res.json({ status: "error", error: "Invalid login" });
   } else {
     const name = voter.name;
-    return res.json({ status: "ok", voterName: name });
+    return res.json({ status: "ok", voterName: name, voter: voter });
   }
 });
 
@@ -202,7 +202,7 @@ app.post("/api/host/addcandidate", jwtVerify, async (req, res) => {
     });
 
     if (nameInOrNot !== null || walletInOrNot !== null) {
-      return res.json({ status: "error", error: "Candidate already exist" });
+      return res.json({ status: "error", message: "Candidate already exist" });
     } else {
       const addStatus = await ElectionHost.updateOne(
         { email: req.body.email, electionStatus: "Not Active" },
@@ -218,7 +218,10 @@ app.post("/api/host/addcandidate", jwtVerify, async (req, res) => {
       if (addStatus.modifiedCount >= 1) {
         res.json({ status: "ok" });
       } else {
-        res.json({ status: "error" });
+        res.json({
+          status: "error",
+          message: "contract is either deployed or in active state.",
+        });
       }
     }
   } catch (error) {
@@ -300,8 +303,9 @@ app.post("/api/host/setcontractandabi", jwtVerify, async (req, res) => {
           contract: {
             abi: req.body.abi,
             contractAddress: req.body.contractAddress,
+            walletAddress: req.body.walletAddress,
           },
-          electionStatus: "Active",
+          electionStatus: "Deployed",
         },
       }
     );
@@ -310,6 +314,107 @@ app.post("/api/host/setcontractandabi", jwtVerify, async (req, res) => {
       return res.json({ status: "ok" });
     } else {
       return res.json({ status: "error" });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/getelectionstatus", jwtVerify, async (req, res) => {
+  try {
+    const estatus = await ElectionHost.findOne(
+      {
+        email: req.body.email,
+      },
+      {
+        electionStatus: 1,
+      }
+    );
+
+    if (!estatus || estatus === null) {
+      return res.json({ status: "error", error: "Invalid election status" });
+    } else {
+      return res.json({ status: "ok", electionStatus: estatus.electionStatus });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.get("/api/elections", async (req, res) => {
+  try {
+    const elections = await ElectionHost.find(
+      {
+        $or: [
+          { electionStatus: "Active" },
+          { electionStatus: "Deployed" },
+          { electionStatus: "Started" },
+          { electionStatus: "Ended" },
+        ],
+      },
+      {
+        _id: 1,
+        organizationName: 1,
+        typeOfOrg: 1,
+        eStartDate: 1,
+        eEndDate: 1,
+        electionStatus: 1,
+      }
+    );
+
+    if (!elections || elections === null || elections.length === 0) {
+      return res.json({ status: "error", error: "No elections found" });
+    } else {
+      return res.json({ status: "ok", elections: elections });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/elections/registervoter", async (req, res) => {
+  try {
+    const addStatus = await ElectionHost.updateOne(
+      { _id: req.body.electionId, electionStatus: "Deployed" },
+      {
+        $push: {
+          voters: {
+            name: req.body.name,
+            walletAddress: req.body.walletAddress,
+            email: req.body.email,
+            aadharNUmber: req.body.aadhar,
+          },
+        },
+      }
+    );
+    if (addStatus.modifiedCount >= 1) {
+      res.json({ status: "ok" });
+    } else {
+      res.json({
+        status: "error",
+        message: "Unknown Error. Please contact your host",
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/elections/voterregisterstatus", async (req, res) => {
+  try {
+    const walletInOrNot = await ElectionHost.findOne({
+      _id: req.body.electionId,
+      voters: {
+        $elemMatch: {
+          walletAddress: req.body.walletAddress,
+        },
+      },
+    });
+
+    if (!walletInOrNot || walletInOrNot === null) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({ status: "error", error: "Voter not registered" });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });

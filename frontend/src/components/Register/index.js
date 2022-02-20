@@ -32,7 +32,7 @@ const Register = () => {
         time: 4000,
       });
 
-      goHome("/")
+      goHome("/");
     } else {
       const walletAddress = account.address;
 
@@ -97,6 +97,7 @@ const Register = () => {
               <FormInput
                 type="number"
                 required
+                onWheel={(e) => e.target.blur()}
                 onChange={(e) => setAadharNumber(e.target.value)}
               />
               <FormLabel htmlFor="for">Wallet Address: </FormLabel>

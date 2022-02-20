@@ -24,6 +24,16 @@ const ElectionHost = new mongoose.Schema(
       },
     ],
     contract: { type: Object, required: false },
+
+    voters: [
+      {
+        type: Object,
+        required: false,
+        unique: true,
+        name: { type: String, required: false },
+        walletAddress: { type: String, required: false },
+      },
+    ],
   },
   { timeStamps: true },
   { collection: "election-host-data" }
