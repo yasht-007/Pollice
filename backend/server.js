@@ -382,7 +382,7 @@ app.post("/api/elections/registervoter", async (req, res) => {
             name: req.body.name,
             walletAddress: req.body.walletAddress,
             email: req.body.email,
-            aadharNUmber: req.body.aadhar,
+            aadharNumber: req.body.aadhar,
           },
         },
       }
@@ -420,6 +420,28 @@ app.post("/api/elections/voterregisterstatus", async (req, res) => {
     return res.json({ status: "error", error: error.message });
   }
 });
+
+app.post("/api/host/getvoters", jwtVerify, async (req, res) => {
+  try {
+    const voters = await ElectionHost.findOne(
+      {
+        email: req.body.email,
+      },
+      {
+        voters: 1,
+      }
+    );
+
+    if (!voters || voters === null) {
+      return res.json({ status: "error", error: "Invalid Voters" });
+    } else {
+      return res.json({ status: "ok", voters: voters });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 
