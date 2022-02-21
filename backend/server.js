@@ -383,6 +383,7 @@ app.post("/api/elections/registervoter", async (req, res) => {
             walletAddress: req.body.walletAddress,
             email: req.body.email,
             aadharNumber: req.body.aadhar,
+            approvalStatus: "Pending",
           },
         },
       }
@@ -442,6 +443,26 @@ app.post("/api/host/getvoters", jwtVerify, async (req, res) => {
   }
 });
 
+app.post("/api/host/getabiandcontract", jwtVerify, async (req, res) => {
+  try {
+    const ContractData = await ElectionHost.findOne(
+      {
+        email: req.body.email,
+      },
+      {
+        contract: 1,
+      }
+    );
+
+    if (!ContractData || ContractData === null) {
+      return res.json({ status: "error", error: "Invalid Contract Data" });
+    } else {
+      return res.json({ status: "ok", contractData: ContractData.contract });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 

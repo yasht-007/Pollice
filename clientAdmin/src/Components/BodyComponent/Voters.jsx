@@ -18,6 +18,7 @@ import MaterialTable from "material-table";
 import tableIcons from "../../utils/MaterialTableIcons";
 import DoneIcon from "@material-ui/icons/Done";
 import CloseIcon from "@material-ui/icons/Close";
+import { ElectionHostState } from "../HostContext";
 
 export default function Voters() {
   const classes = useStyles();
@@ -33,11 +34,30 @@ export default function Voters() {
     ],
   });
 
+  const {
+    contractData,
+    getContractData,
+    electionStatus,
+    getElectionStatus,
+    account,
+  } = ElectionHostState();
+
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    getRequests();
-  }, [refreshKey]);
+    if (account.wallet) {
+      getElectionStatus();
+      if (electionStatus !== "Not Active") {
+        getRequests();
+      }
+    }
+  }, [refreshKey, electionStatus, account]);
+
+  useEffect(() => {
+    if (electionStatus !== "Not Active" && account.wallet) {
+      getContractData();
+    }
+  }, []);
 
   const columns = [
     { title: "Name", field: "name" },
@@ -66,6 +86,29 @@ export default function Voters() {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const approveVoter = async (name, email, walletAddress) => {
+    //setRefreshContract(refreshContract + 1);
+    // axios
+    //   .post("http://localhost:5000/api/host/approvevoter", {
+    //     headers: {
+    //       "x-access-token": localStorage.getItem("token"),
+    //     },
+    //     email: localStorage.getItem("email"),
+    //     voterEmail:email,
+    //     walletAddress: walletAddress,
+    //   })
+    //   .then((res) => {
+    //     if (res.data.status === "ok") {
+
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+
+    console.log(contractData.contractAddress);
   };
 
   return (
@@ -97,7 +140,7 @@ export default function Voters() {
                   headerStyle: {
                     backgroundColor: "black",
                     color: "white",
-                    pointerEvents:"none",
+                    pointerEvents: "none",
                   },
                 }}
                 icons={tableIcons}
@@ -106,7 +149,12 @@ export default function Voters() {
                     icon: DoneIcon,
                     iconProps: { style: { fontSize: "10px", color: "green" } },
                     tooltip: "Approve",
-                    // onClick: (event, rowData) => approveHost(rowData.email),
+                    onClick: (event, rowData) =>
+                      approveVoter(
+                        rowData.name,
+                        rowData.email,
+                        rowData.walletAddress
+                      ),
                   },
                   {
                     icon: CloseIcon,

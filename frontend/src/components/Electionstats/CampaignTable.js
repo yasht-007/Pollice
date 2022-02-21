@@ -127,6 +127,7 @@ const CampaignTable = () => {
           aadhar: user.aadharNumber,
           electionId: row._id,
           walletAddress: account.address,
+          approvalStatus: "Pending",
         })
         .then((res) => {
           if (res.data.status === "ok") {
@@ -166,6 +167,9 @@ const CampaignTable = () => {
       })
       .then((res) => {
         if (res.data.status === "ok") {
+          setRegistered(false);
+        }
+        else{
           setRegistered(true);
         }
       })

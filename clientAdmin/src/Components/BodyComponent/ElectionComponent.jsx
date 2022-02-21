@@ -30,7 +30,7 @@ const bytes32 = require("bytes32");
 
 export default function ElectionComponent() {
   const classes = useStyles();
-  const { account } = ElectionHostState();
+  const { account, electionStatus, getElectionStatus } = ElectionHostState();
   const [posts, setPosts] = useState({
     data: [
       {
@@ -43,21 +43,30 @@ export default function ElectionComponent() {
   const [ballotName, setBallotName] = useState("");
   const [proposal, setProposal] = useState("");
   const [buttonclick, setButtonClick] = useState(false);
-  const [electionStatus, setElectionStatus] = useState("");
-  const [isEstatusUpdated, setIsEstatusUpdated] = useState(false);
+  const [isDeployed, setIsDeployed] = useState(false);
 
   useEffect(() => {
     getRequests();
   }, []);
 
   useEffect(() => {
-    getElectionStatus();
-  }, [isEstatusUpdated]);
+    if (account.wallet) {
+      getElectionStatus();
+
+      if (electionStatus === "Deployed") {
+        setButtonClick(true);
+      } else {
+        setButtonClick(false);
+      }
+    } else {
+      setButtonClick(false);
+    }
+  }, [isDeployed, account, electionStatus]);
 
   const DisplayData = [
     {
       label: "Election Status",
-      value: electionStatus,
+      value: account.wallet ? electionStatus : "Not Connected",
       icon: <ArrowDropUpIcon />,
       iconLabel: "4%",
     },
@@ -109,29 +118,6 @@ export default function ElectionComponent() {
       });
   };
 
-  const getElectionStatus = async () => {
-    await axios
-      .post("http://localhost:5000/api/host/getelectionstatus", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        email: localStorage.getItem("email"),
-      })
-      .then((res) => {
-        if (res.data.status === "ok") {
-          setElectionStatus(res.data.electionStatus);
-          if (res.data.electionStatus === "Deployed") {
-            setButtonClick(true);
-          }
-        } else {
-          window.alert("Error");
-        }
-      })
-      .catch((err) => {
-        window.alert(err);
-      });
-  };
-
   const updateToDatabase = async (abi, contractAddress, defaultAccount) => {
     await axios
       .post("http://localhost:5000/api/host/setcontractandabi", {
@@ -146,7 +132,7 @@ export default function ElectionComponent() {
       .then((res) => {
         if (res.data.status === "ok") {
           window.alert("Contract Deployed Successfully");
-          setIsEstatusUpdated(true);
+          setIsDeployed(true);
         } else {
           window.alert("error");
         }
