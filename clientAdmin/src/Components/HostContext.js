@@ -46,6 +46,7 @@ const HostContext = ({ children }) => {
 
       if (cData.data.status === "ok") {
         setContractData(cData.data.contractData);
+        localStorage.setItem("id", cData.data.id);
       } else {
         window.alert("Error in fetching contract data");
       }

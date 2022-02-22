@@ -82,6 +82,8 @@ export default function Voters() {
         if (res.data.status === "ok") {
           const hosts = res.data.voters;
           setPosts({ data: hosts.voters });
+        }else{
+          setPosts({ data: [] });
         }
       })
       .catch((err) => {
@@ -89,36 +91,31 @@ export default function Voters() {
       });
   };
 
+  const updateToDatabase = async (walletAddress) => {
+    await axios
+      .post("http://localhost:5000/api/host/approvevoter", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        electionId: localStorage.getItem("id"),
+        walletAddress: walletAddress,
+      })
+      .then((res) => {
+        if (res.data.status === "ok") {
+          window.alert("Voter Approved");
+        } else {
+          window.alert(res.data.error);
+        }
+      })
+      .catch((err) => {
+        window.alert(err.message);
+      });
+  };
+
   const approveVoter = async (name, email, walletAddress) => {
-    //setRefreshContract(refreshContract + 1);
-    // axios
-    //   .post("http://localhost:5000/api/host/approvevoter", {
-    //     headers: {
-    //       "x-access-token": localStorage.getItem("token"),
-    //     },
-    //     email: localStorage.getItem("email"),
-    //     voterEmail:email,
-    //     walletAddress: walletAddress,
-    //   })
-    //   .then((res) => {
-    //     if (res.data.status === "ok") {
-
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-
     const abi = contractData.abi;
     const address = contractData.contractAddress;
     const contract = new web3.eth.Contract(abi, address);
-
-    // await contract.methods
-    //   .totalVoter()
-    //   .call()
-    //   .then((res) => {
-    //     console.log(res);
-    //   });
 
     try {
       window.alert(
@@ -130,9 +127,15 @@ export default function Voters() {
         .send({
           from: contractData.walletAddress,
         })
-        .then((res) => {
-          //
-          // console.log(res);
+        .then((result) => {
+          if (
+            result.events.voterRegister !== undefined ||
+            result.events.voterRegister !== null
+          ) {
+            updateToDatabase(walletAddress);
+            setRefreshKey((refreshKey) => refreshKey + 1);
+            console.log(refreshKey);
+          }
 
           // var event = contract.voterRegister(function (error, result) {
           //   if (!error) console.log(result);

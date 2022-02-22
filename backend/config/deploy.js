@@ -4,9 +4,6 @@ const path = require("path");
 // file system - read and write files to your computer
 var fs = require("fs");
 
-// web3 interface
-var Web3 = require("web3");
-
 const solpath = path.resolve(__dirname, "./Election.sol");
 
 var fileContent = fs.readFileSync(solpath, "UTF-8").toString();

@@ -444,6 +444,7 @@ app.post("/api/host/getvoters", jwtVerify, async (req, res) => {
     const voters = await ElectionHost.findOne(
       {
         email: req.body.email,
+        "voters.approvalStatus": "Pending",
       },
       {
         voters: 1,
@@ -467,6 +468,7 @@ app.post("/api/host/getabiandcontract", jwtVerify, async (req, res) => {
         email: req.body.email,
       },
       {
+        _id: 1,
         contract: 1,
       }
     );
@@ -474,7 +476,57 @@ app.post("/api/host/getabiandcontract", jwtVerify, async (req, res) => {
     if (!ContractData || ContractData === null) {
       return res.json({ status: "error", error: "Invalid Contract Data" });
     } else {
-      return res.json({ status: "ok", contractData: ContractData.contract });
+      return res.json({
+        status: "ok",
+        contractData: ContractData.contract,
+        id: ContractData._id,
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/approvevoter", jwtVerify, async (req, res) => {
+  try {
+    const updateStatus = await ElectionHost.updateOne(
+      {
+        _id: req.body.electionId,
+        "voters.walletAddress": req.body.walletAddress,
+      },
+      {
+        $set: {
+          "voters.$.approvalStatus": "Approved",
+        },
+      }
+    );
+
+    if (updateStatus.modifiedCount >= 1) {
+      const updateUser = await User.updateOne(
+        {
+          walletAddress: req.body.walletAddress,
+          "registerations.eId": req.body.electionId,
+        },
+        {
+          $set: {
+            "registerations.$.approvalStatus": "Permitted",
+          },
+        }
+      );
+
+      if (updateUser.modifiedCount >= 1) {
+        return res.json({ status: "ok" });
+      } else {
+        return res.json({
+          status: "error",
+          error: "Error in updating voter data! Please contact supoort",
+        });
+      }
+    } else {
+      return res.json({
+        status: "error",
+        error: "Error occured in Voter add! Please contact support",
+      });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });
