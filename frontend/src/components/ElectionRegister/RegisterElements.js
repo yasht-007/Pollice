@@ -187,7 +187,7 @@ export const FormTextArea = styled.textarea`
 `;
 
 export const TableButton = styled.button`
-  background: orange;
+  background: #01bf71;
   padding: 6px 10px;
   border: none;
   border-radius: 4px;

@@ -18,7 +18,7 @@ import {
 import { ElectionState } from "../../ElectionContext";
 import Pagination from "@material-ui/lab/Pagination";
 import { useNavigate } from "react-router-dom";
-import { TableButton } from "../ElectionRegister/RegisterElements";
+import { FormButton, TableButton } from "../ElectionRegister/RegisterElements";
 import axios from "axios";
 
 const useStyles = makeStyles({
@@ -54,6 +54,7 @@ const CampaignTable = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [isElection, setIsElection] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (isElection >= 2) {
@@ -67,15 +68,6 @@ const CampaignTable = () => {
     }
   }, [isElection]);
 
-  const darkTheme = createTheme({
-    palette: {
-      primary: {
-        main: "#fff",
-      },
-      type: "dark",
-    },
-  });
-
   useEffect(() => {
     fetchElections();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,10 +80,19 @@ const CampaignTable = () => {
   }, [account]);
 
   useEffect(() => {
-    if (user) {
+    if (user && account.wallet) {
       fetchVoterStatus();
     }
-  }, [user]);
+  }, [user, account]);
+
+  const darkTheme = createTheme({
+    palette: {
+      primary: {
+        main: "#fff",
+      },
+      type: "dark",
+    },
+  });
 
   const handleSearch = () => {
     return elections.filter((election) =>
@@ -120,68 +121,85 @@ const CampaignTable = () => {
       });
       window.scrollTo(0, 0);
     } else {
-      await axios
-        .post("http://localhost:5000/api/elections/registervoter", {
-          name: user.name,
-          email: user.email,
-          aadhar: user.aadharNumber,
-          electionId: row._id,
-          walletAddress: account.address,
-          approvalStatus: "Pending",
-        })
-        .then((res) => {
-          if (res.data.status === "ok") {
+      if (
+        window.confirm(
+          "Are you sure you want to register for election of " +
+            row.organizationName +
+            "?"
+        )
+      ) {
+        await axios
+          .post("http://localhost:5000/api/elections/registervoter", {
+            name: user.name,
+            email: user.email,
+            aadhar: user.aadharNumber,
+            electionId: row._id,
+            walletAddress: account.address,
+            approvalStatus: "Pending",
+          })
+          .then((res) => {
+            if (res.data.status === "ok") {
+              setAlert({
+                open: true,
+                message:
+                  "You have successfully registered for this election! Please reconnect or your wallet or reload page to see the status of your registration",
+                type: "success",
+                time: 6000,
+              });
+              setRegistered(true);
+            } else {
+              setAlert({
+                open: true,
+                message: "Unknown Error Occured",
+                type: "error",
+                time: 3000,
+              });
+            }
+          })
+          .catch((err) => {
             setAlert({
               open: true,
-              message:
-                "You have successfully registered for this election! You will get an email confirmation shortly",
-              type: "success",
-              time: 6000,
-            });
-            setRegistered(true);
-          } else {
-            setAlert({
-              open: true,
-              message: "Unknown Error Occured",
+              message: err.message,
               type: "error",
-              time: 3000,
+              time: 7000,
             });
-          }
-        })
-        .catch((err) => {
-          setAlert({
-            open: true,
-            message: err.message,
-            type: "error",
-            time: 7000,
           });
-        });
+      }
     }
   };
 
   const fetchVoterStatus = async () => {
-    await axios
-      .post("http://localhost:5000/api/elections/voterregisterstatus", {
-        electionId: elections._id,
-        walletAddress: account.address,
-      })
-      .then((res) => {
-        if (res.data.status === "ok") {
-          setRegistered(false);
-        }
-        else{
-          setRegistered(true);
-        }
-      })
-      .catch((err) => {
-        setAlert({
-          open: true,
-          message: err.message,
-          type: "error",
-          time: 5000,
-        });
-        setRegistered(false);
-      });
+    if (!user.registerations || user.registerations.length === 0) {
+      setRegistered(false);
+    } else {
+      setRegistered(true);
+    }
+  };
+
+  const findRegisteration = (eId) => {
+    if (registered && user.registerations.length > 0) {
+      if (user.registerations.find((e) => e.eId === eId)) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  const voterRegStatus = (eId) => {
+    if (registered && user.registerations.length > 0) {
+      if (user.registerations.find((e) => e.approvalStatus === "Requested")) {
+        return "Requested";
+      } else if (
+        user.registerations.find((e) => e.approvalStatus === "Permitted")
+      ) {
+        return "Permitted";
+      }
+    } else {
+      return "Not Registered";
+    }
   };
 
   return (
@@ -283,27 +301,22 @@ const CampaignTable = () => {
                                 {row.electionStatus}
                               </span>
                             </TableCell>
-
                             <TableCell align="center">
-                              {row.electionStatus === "Deployed" ? (
-                                registered && account.wallet ? (
-                                  <span
-                                    style={{
-                                      fontSize: 17,
-                                    }}
-                                  >
-                                    Registered
-                                  </span>
-                                ) : (
-                                  <TableButton
-                                    type="submit"
-                                    onClick={() => registerVoter(row)}
-                                  >
-                                    Register
-                                  </TableButton>
-                                )
+                              {account.wallet && findRegisteration(row._id) ? (
+                                <span
+                                  style={{
+                                    fontSize: 17,
+                                  }}
+                                >
+                                  {voterRegStatus(row._id)}
+                                </span>
                               ) : (
-                                <TableButton type="submit">Vote</TableButton>
+                                <TableButton
+                                  type="submit"
+                                  onClick={() => registerVoter(row)}
+                                >
+                                  Register
+                                </TableButton>
                               )}
                             </TableCell>
                           </TableRow>

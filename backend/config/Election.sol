@@ -51,6 +51,10 @@ contract Election{
         string currentStateName
     );
 
+     event voterRegister(
+        string regStatus
+    );
+
     constructor(
         string memory _ballotOfficialName,
         string memory _proposal,
@@ -105,6 +109,8 @@ contract Election{
 
         voterRegistry[_voterAddress] = v;
         totalVoter++;
+
+        emit voterRegister("Voter Registered");
     }
 
     function startVote()

@@ -6,6 +6,13 @@ const Voter = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     aadharNumber: { type: String, required: true, unique: true },
     walletAddress: { type: String, unique: true },
+
+    registerations: [
+      {
+        eId: { type: String, required: false, unique: true },
+        approvalStatus: { type: String, required: false },
+      },
+    ],
   },
   { timeStamps: true },
   { collection: "voter-data" }

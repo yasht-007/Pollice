@@ -12,14 +12,11 @@ import {
   Item,
   RadioButton,
   RadioButtonLabel,
-  FormTextArea,
 } from "./RegisterElements";
 
 import { ElectionState } from "../../ElectionContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-// const moment = require("moment");
 
 const Register = () => {
   const [email, setEmail] = useState("");

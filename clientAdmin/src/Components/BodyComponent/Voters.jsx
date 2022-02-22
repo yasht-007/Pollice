@@ -19,6 +19,7 @@ import tableIcons from "../../utils/MaterialTableIcons";
 import DoneIcon from "@material-ui/icons/Done";
 import CloseIcon from "@material-ui/icons/Close";
 import { ElectionHostState } from "../HostContext";
+import web3 from "../../utils/web3";
 
 export default function Voters() {
   const classes = useStyles();
@@ -57,7 +58,7 @@ export default function Voters() {
     if (electionStatus !== "Not Active" && account.wallet) {
       getContractData();
     }
-  }, []);
+  }, [account]);
 
   const columns = [
     { title: "Name", field: "name" },
@@ -108,7 +109,40 @@ export default function Voters() {
     //     console.log(err);
     //   });
 
-    console.log(contractData.contractAddress);
+    const abi = contractData.abi;
+    const address = contractData.contractAddress;
+    const contract = new web3.eth.Contract(abi, address);
+
+    // await contract.methods
+    //   .totalVoter()
+    //   .call()
+    //   .then((res) => {
+    //     console.log(res);
+    //   });
+
+    try {
+      window.alert(
+        "Approving Voter! Please wait atleast 40 seconds for the transaction to be mined."
+      );
+
+      await contract.methods
+        .addVoter(walletAddress, name)
+        .send({
+          from: contractData.walletAddress,
+        })
+        .then((res) => {
+          //
+          // console.log(res);
+
+          // var event = contract.voterRegister(function (error, result) {
+          //   if (!error) console.log(result);
+          // });
+
+          // console.log(event);
+        });
+    } catch (error) {
+      window.alert(error.message);
+    }
   };
 
   return (

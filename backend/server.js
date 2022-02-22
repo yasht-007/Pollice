@@ -389,7 +389,21 @@ app.post("/api/elections/registervoter", async (req, res) => {
       }
     );
     if (addStatus.modifiedCount >= 1) {
-      res.json({ status: "ok" });
+      const entryVoter = await User.updateOne(
+        { walletAddress: req.body.walletAddress },
+        {
+          $push: {
+            registerations: {
+              eId: req.body.electionId.toString(),
+              approvalStatus: "Requested",
+            },
+          },
+        }
+      );
+
+      if (entryVoter.modifiedCount >= 1) {
+        return res.json({ status: "ok" });
+      }
     } else {
       res.json({
         status: "error",
@@ -407,15 +421,18 @@ app.post("/api/elections/voterregisterstatus", async (req, res) => {
       _id: req.body.electionId,
       voters: {
         $elemMatch: {
+          name: "Rudra Pathak",
           walletAddress: req.body.walletAddress,
         },
       },
     });
 
+    // console.log(walletInOrNot);
+
     if (!walletInOrNot || walletInOrNot === null) {
       return res.json({ status: "ok" });
     } else {
-      return res.json({ status: "error", error: "Voter not registered" });
+      return res.json({ status: "error" });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });
