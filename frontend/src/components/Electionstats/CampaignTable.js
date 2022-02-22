@@ -144,7 +144,7 @@ const CampaignTable = () => {
                 message:
                   "You have successfully registered for this election! Please reconnect or your wallet or reload page to see the status of your registration",
                 type: "success",
-                time: 6000,
+                time: 8000,
               });
               setRegistered(true);
             } else {
@@ -196,9 +196,13 @@ const CampaignTable = () => {
         user.registerations.find((e) => e.approvalStatus === "Permitted")
       ) {
         return "Permitted";
+      } else if (
+        user.registerations.find((e) => e.approvalStatus === "Rejected")
+      ) {
+        return "Rejected";
+      } else {
+        return "Not Registered";
       }
-    } else {
-      return "Not Registered";
     }
   };
 

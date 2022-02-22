@@ -82,7 +82,7 @@ export default function Voters() {
         if (res.data.status === "ok") {
           const hosts = res.data.voters;
           setPosts({ data: hosts.voters });
-        }else{
+        } else {
           setPosts({ data: [] });
         }
       })
@@ -134,18 +134,33 @@ export default function Voters() {
           ) {
             updateToDatabase(walletAddress);
             setRefreshKey((refreshKey) => refreshKey + 1);
-            console.log(refreshKey);
           }
-
-          // var event = contract.voterRegister(function (error, result) {
-          //   if (!error) console.log(result);
-          // });
-
-          // console.log(event);
         });
     } catch (error) {
       window.alert(error.message);
     }
+  };
+
+  const declineVoter = async (declineWalletAddress) => {
+    await axios
+      .post("http://localhost:5000/api/host/declinevoter", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        electionId: localStorage.getItem("id"),
+        walletAddress: declineWalletAddress,
+      })
+      .then((res) => {
+        if (res.data.status === "ok") {
+          window.alert("Voter Declined");
+          setRefreshKey((refreshKey) => refreshKey + 1);
+        } else {
+          window.alert(res.data.error);
+        }
+      })
+      .catch((err) => {
+        window.alert(err.message);
+      });
   };
 
   return (
@@ -187,17 +202,14 @@ export default function Voters() {
                     iconProps: { style: { fontSize: "10px", color: "green" } },
                     tooltip: "Approve",
                     onClick: (event, rowData) =>
-                      approveVoter(
-                        rowData.name,
-                        rowData.email,
-                        rowData.walletAddress
-                      ),
+                      approveVoter(rowData.walletAddress),
                   },
                   {
                     icon: CloseIcon,
                     iconProps: { style: { fontSize: "14px", color: "red" } },
                     tooltip: "Reject",
-                    // onClick: (event, rowData) => rejectHost(rowData.email),
+                    onClick: (event, rowData) =>
+                      declineVoter(rowData.walletAddress),
                   },
                 ]}
               />

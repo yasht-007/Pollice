@@ -533,6 +533,52 @@ app.post("/api/host/approvevoter", jwtVerify, async (req, res) => {
   }
 });
 
+app.post("/api/host/declinevoter", jwtVerify, async (req, res) => {
+  try {
+    const declineStatus = await ElectionHost.updateOne(
+      {
+        _id: req.body.electionId,
+        "voters.walletAddress": req.body.walletAddress,
+      },
+      {
+        $set: {
+          "voters.$.approvalStatus": "Rejected",
+        },
+      }
+    );
+
+    if (declineStatus.modifiedCount >= 1) {
+      const declineUser = await User.updateOne(
+        {
+          walletAddress: req.body.walletAddress,
+          "registerations.eId": req.body.electionId,
+        },
+        {
+          $set: {
+            "registerations.$.approvalStatus": "Rejected",
+          },
+        }
+      );
+
+      if (declineUser.modifiedCount >= 1) {
+        return res.json({ status: "ok" });
+      } else {
+        return res.json({
+          status: "error",
+          error: "Error in decline voter data! Please contact supoort",
+        });
+      }
+    } else {
+      return res.json({
+        status: "error",
+        error: "Error occured in Voter decline! Please contact support",
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
