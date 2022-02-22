@@ -13,12 +13,14 @@ import { useStyles } from "./BodyStyles";
 import axios from "axios";
 import MaterialTable from "material-table";
 import tableIcons from "../../utils/MaterialTableIcons";
+import { ElectionHostState } from "../HostContext";
 
 export default function Candidates() {
   const classes = useStyles();
   const textInput = React.useRef(null);
   const textInput1 = React.useRef(null);
   const textInput2 = React.useRef(null);
+  const [buttonclick, setButtonClick] = useState(false);
 
   const [posts, setPosts] = useState({
     data: [
@@ -32,10 +34,27 @@ export default function Candidates() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [cName, setCname] = useState("");
   const [cAddress, setCaddress] = useState("");
+  const { account, electionStatus, getElectionStatus } = ElectionHostState();
 
   useEffect(() => {
-    getRequests();
-  }, [refreshKey]);
+    if (account.wallet) {
+      getRequests();
+    }
+  }, [refreshKey, account]);
+
+  useEffect(() => {
+    if (account.wallet) {
+      getElectionStatus();
+
+      if (electionStatus === "Deployed") {
+        setButtonClick(true);
+      } else {
+        setButtonClick(false);
+      }
+    } else {
+      setButtonClick(false);
+    }
+  }, [account, electionStatus]);
 
   const columns = [
     { title: "Name", field: "name" },
@@ -136,6 +155,7 @@ export default function Candidates() {
               style={{ padding: "5px" }}
               size="small"
               inputRef={textInput2}
+              disabled={buttonclick === false ? "" : "disabled"}
               onChange={(e) => setCname(e.target.value)}
             />
           </Grid>
@@ -154,6 +174,7 @@ export default function Candidates() {
               style={{ padding: "5px", width: "42ch", maxWidth: "42ch" }}
               size="small"
               inputRef={textInput1}
+              disabled={buttonclick === false ? "" : "disabled"}
               onChange={(e) => setCaddress(e.target.value)}
             />
           </Grid>
@@ -168,6 +189,7 @@ export default function Candidates() {
           <Button
             variant="contained"
             color="primary"
+            disabled={buttonclick}
             onClick={(e) => addCandidate(e)}
           >
             Add Candidate
@@ -195,6 +217,7 @@ export default function Candidates() {
               inputRef={textInput}
               style={{ padding: "5px", width: "42ch", maxWidth: "42ch" }}
               size="small"
+              disabled={buttonclick === false ? "" : "disabled"}
               onChange={(e) => setCaddress(e.target.value)}
             />
           </Grid>
@@ -209,6 +232,7 @@ export default function Candidates() {
           <Button
             variant="contained"
             color="primary"
+            disabled={buttonclick}
             onClick={(e) => deleteCandidate(e)}
           >
             Delete Candidate
