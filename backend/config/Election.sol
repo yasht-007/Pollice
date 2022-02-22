@@ -120,7 +120,6 @@ contract Election{
     {
         state= State.Voting;
         emit electionState("Voting");
-
     }
 
 

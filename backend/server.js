@@ -579,6 +579,54 @@ app.post("/api/host/declinevoter", jwtVerify, async (req, res) => {
   }
 });
 
+app.post("/api/host/startelections", jwtVerify, async (req, res) => {
+  try {
+    const startElection = await ElectionHost.updateOne(
+      {
+        email: req.body.email,
+      },
+      {
+        $set: {
+          electionStatus: "Started",
+        },
+      }
+    );
+
+    if (startElection.modifiedCount >= 1) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({
+        status: "error",
+        error: "Error in starting election! Please contact support",
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/approvedvoters", jwtVerify, async (req, res) => {
+  try {
+    const approvedVoters = await ElectionHost.findOne(
+      {
+        _id: req.body.electionId,
+        "voters.approvalStatus": "Approved",
+      },
+      {
+        voters: 1,
+      }
+    );
+
+    if (!approvedVoters || approvedVoters === null) {
+      return res.json({ status: "error", error: "Invalid Voters" });
+    } else {
+      return res.json({ status: "ok", approvedvoters: approvedVoters });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

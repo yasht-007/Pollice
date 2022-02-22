@@ -35,6 +35,17 @@ export default function Voters() {
     ],
   });
 
+  const [approvedPosts, setApprovedPosts] = useState({
+    data: [
+      {
+        name: "",
+        email: "",
+        aadharNumber: 0,
+        walletAddress: "",
+      },
+    ],
+  });
+
   const {
     contractData,
     getContractData,
@@ -48,14 +59,16 @@ export default function Voters() {
   useEffect(() => {
     if (account.wallet) {
       getElectionStatus();
-      if (electionStatus !== "Not Active") {
+      if (electionStatus === "Deployed") {
         getRequests();
+      } else if (electionStatus === "Started") {
+        getApprovedVoters();
       }
     }
   }, [refreshKey, electionStatus, account]);
 
   useEffect(() => {
-    if (electionStatus !== "Not Active" && account.wallet) {
+    if (electionStatus === "Deployed" && account.wallet) {
       getContractData();
     }
   }, [account]);
@@ -112,7 +125,7 @@ export default function Voters() {
       });
   };
 
-  const approveVoter = async (name, email, walletAddress) => {
+  const approveVoter = async (name, walletAddress) => {
     const abi = contractData.abi;
     const address = contractData.contractAddress;
     const contract = new web3.eth.Contract(abi, address);
@@ -163,6 +176,27 @@ export default function Voters() {
       });
   };
 
+  const getApprovedVoters = async () => {
+    await axios
+      .post("http://localhost:5000/api/host/approvedvoters", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        electionId: localStorage.getItem("id"),
+      })
+      .then((res) => {
+        if (res.data.status === "ok") {
+          const hosts = res.data.approvedvoters;
+          setApprovedPosts({ data: hosts.voters });
+        } else {
+          setApprovedPosts({ data: [] });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Box className={classes.section}>
       <PageHeader label="voter" />
@@ -174,45 +208,73 @@ export default function Voters() {
         ) : (
           <>
             <Container>
-              <MaterialTable
-                title="Voter Management:"
-                columns={columns}
-                data={posts.data}
-                style={{
-                  textAlign: "center",
-                  textOverflow: "ellipsis",
-                }}
-                options={{
-                  actionsCellStyle: {
-                    backgroundColor: "#fff",
-                    color: "red",
-                  },
-                  toolbar: true,
-                  search: true,
-                  headerStyle: {
-                    backgroundColor: "black",
-                    color: "white",
-                    pointerEvents: "none",
-                  },
-                }}
-                icons={tableIcons}
-                actions={[
-                  {
-                    icon: DoneIcon,
-                    iconProps: { style: { fontSize: "10px", color: "green" } },
-                    tooltip: "Approve",
-                    onClick: (event, rowData) =>
-                      approveVoter(rowData.walletAddress),
-                  },
-                  {
-                    icon: CloseIcon,
-                    iconProps: { style: { fontSize: "14px", color: "red" } },
-                    tooltip: "Reject",
-                    onClick: (event, rowData) =>
-                      declineVoter(rowData.walletAddress),
-                  },
-                ]}
-              />
+              {electionStatus === "Deployed" ? (
+                <MaterialTable
+                  title="Voter Management:"
+                  columns={columns}
+                  data={posts.data}
+                  style={{
+                    textAlign: "center",
+                    textOverflow: "ellipsis",
+                  }}
+                  options={{
+                    actionsCellStyle: {
+                      backgroundColor: "#fff",
+                      color: "red",
+                    },
+                    toolbar: true,
+                    search: true,
+                    headerStyle: {
+                      backgroundColor: "black",
+                      color: "white",
+                      pointerEvents: "none",
+                    },
+                  }}
+                  icons={tableIcons}
+                  actions={[
+                    {
+                      icon: DoneIcon,
+                      iconProps: {
+                        style: { fontSize: "10px", color: "green" },
+                      },
+                      tooltip: "Approve",
+                      onClick: (event, rowData) =>
+                        approveVoter(rowData.name, rowData.walletAddress),
+                    },
+                    {
+                      icon: CloseIcon,
+                      iconProps: { style: { fontSize: "14px", color: "red" } },
+                      tooltip: "Reject",
+                      onClick: (event, rowData) =>
+                        declineVoter(rowData.walletAddress),
+                    },
+                  ]}
+                />
+              ) : (
+                <MaterialTable
+                  title="Voter Management:"
+                  columns={columns}
+                  data={approvedPosts.data}
+                  style={{
+                    textAlign: "center",
+                    textOverflow: "ellipsis",
+                  }}
+                  options={{
+                    actionsCellStyle: {
+                      backgroundColor: "#fff",
+                      color: "red",
+                    },
+                    toolbar: true,
+                    search: true,
+                    headerStyle: {
+                      backgroundColor: "black",
+                      color: "white",
+                      pointerEvents: "none",
+                    },
+                  }}
+                  icons={tableIcons}
+                />
+              )}
             </Container>
           </>
         )}

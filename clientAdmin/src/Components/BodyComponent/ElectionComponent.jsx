@@ -25,12 +25,18 @@ import InboxIcon from "@material-ui/icons/Person";
 import AccounntBalanceIcon from "@material-ui/icons/AccountBalanceRounded";
 import axios from "axios";
 import web3 from "../../utils/web3";
-// import deployContract from "../../utils/deploy";
 const bytes32 = require("bytes32");
 
 export default function ElectionComponent() {
   const classes = useStyles();
-  const { account, electionStatus, getElectionStatus } = ElectionHostState();
+  const {
+    account,
+    electionStatus,
+    getElectionStatus,
+    contractData,
+    getContractData,
+  } = ElectionHostState();
+
   const [posts, setPosts] = useState({
     data: [
       {
@@ -43,11 +49,14 @@ export default function ElectionComponent() {
   const [ballotName, setBallotName] = useState("");
   const [proposal, setProposal] = useState("");
   const [buttonclick, setButtonClick] = useState(false);
+  const [startbuttonclick, setStartButtonClick] = useState(false);
   const [isDeployed, setIsDeployed] = useState(false);
 
   useEffect(() => {
+    if(account.wallet && electionStatus === "Deployed"){
     getRequests();
-  }, []);
+    }
+  }, [account,electionStatus]);
 
   useEffect(() => {
     if (account.wallet) {
@@ -55,13 +64,25 @@ export default function ElectionComponent() {
 
       if (electionStatus === "Deployed") {
         setButtonClick(true);
+      } else if (electionStatus === "Started") {
+        setButtonClick(true);
+        setStartButtonClick(true);
       } else {
         setButtonClick(false);
       }
     } else {
       setButtonClick(false);
+      setStartButtonClick(false);
     }
   }, [isDeployed, account, electionStatus]);
+
+  useEffect(() => {
+    if (electionStatus === "Deployed" && account.wallet) {
+      console.log("hello");
+      getContractData();
+      console.log("hello");
+    }
+  }, [account,electionStatus]);
 
   const DisplayData = [
     {
@@ -214,6 +235,55 @@ export default function ElectionComponent() {
             }
           }
         });
+    }
+  };
+
+  const updateStartStatus = async () => {
+    await axios
+      .post("http://localhost:5000/api/host/startelections", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        email: localStorage.getItem("email"),
+      })
+      .then((res) => {
+        if (res.data.status === "ok") {
+          window.alert("Election started Successfully");
+          setStartButtonClick(true);
+        }else{
+          window.alert(res.data.error);
+        }
+      });
+  };
+
+  const startElection = async () => {
+    const abi = contractData.abi;
+    const address = contractData.contractAddress;
+    const contract = new web3.eth.Contract(abi, address);
+
+    try {
+      window.alert(
+        "Starting Election voting! Please wait atleast 40 seconds for the transaction to be mined."
+      );
+
+      setStartButtonClick(true);
+
+      await contract.methods
+        .startVote()
+        .send({
+          from: contractData.walletAddress,
+        })
+        .then((result) => {
+          if (
+            result.events.electionState !== undefined ||
+            result.events.electionState !== null
+          ) {
+            updateStartStatus();
+          }
+        });
+    } catch (error) {
+      window.alert(error.message);
+      setStartButtonClick(false);
     }
   };
 
@@ -464,6 +534,10 @@ export default function ElectionComponent() {
               variant="contained"
               color="primary"
               className={classes.ebutton}
+              disabled={startbuttonclick}
+              onClick={() => {
+                startElection();
+              }}
             >
               Start
             </Button>

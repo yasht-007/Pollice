@@ -48,6 +48,8 @@ export default function Candidates() {
 
       if (electionStatus === "Deployed") {
         setButtonClick(true);
+      } else if (electionStatus === "Started") {
+        setButtonClick(true);
       } else {
         setButtonClick(false);
       }
