@@ -51,12 +51,20 @@ export default function ElectionComponent() {
   const [buttonclick, setButtonClick] = useState(false);
   const [startbuttonclick, setStartButtonClick] = useState(false);
   const [isDeployed, setIsDeployed] = useState(false);
+  const [totalVoters, setTotalVoters] = useState(0);
+  const [totalVotes, setTotalVotes] = useState(0);
 
   useEffect(() => {
-    if(account.wallet && electionStatus === "Deployed"){
-    getRequests();
+    if (account.wallet && electionStatus === "Deployed") {
+      getRequests();
     }
-  }, [account,electionStatus]);
+  }, [account, electionStatus]);
+
+  useEffect(() => {
+    if (account.wallet && electionStatus !== "Not Active") {
+      getContractData();
+    }
+  }, [account, electionStatus]);
 
   useEffect(() => {
     if (account.wallet) {
@@ -65,6 +73,7 @@ export default function ElectionComponent() {
       if (electionStatus === "Deployed") {
         setButtonClick(true);
       } else if (electionStatus === "Started") {
+        getTotalVotersAndVotes();
         setButtonClick(true);
         setStartButtonClick(true);
       } else {
@@ -76,14 +85,6 @@ export default function ElectionComponent() {
     }
   }, [isDeployed, account, electionStatus]);
 
-  useEffect(() => {
-    if (electionStatus === "Deployed" && account.wallet) {
-      console.log("hello");
-      getContractData();
-      console.log("hello");
-    }
-  }, [account,electionStatus]);
-
   const DisplayData = [
     {
       label: "Election Status",
@@ -93,19 +94,23 @@ export default function ElectionComponent() {
     },
     {
       label: "Total Voters",
-      value: "100",
+      value:
+        account.wallet && electionStatus === "Started" ? totalVoters : "NA",
       icon: <ArrowDropUpIcon />,
       iconLabel: "4%",
     },
     {
       label: "Total Votes",
-      value: "90",
+      value: account.wallet && electionStatus === "Started" ? totalVotes : "NA",
       icon: <ArrowDropUpIcon />,
       iconLabel: "9%",
     },
     {
       label: "Voting Percentage",
-      value: "90%",
+      value:
+        account.wallet && electionStatus === "Started"
+          ? (totalVoters * totalVotes) / 100
+          : "NA",
       icon: <ArrowDropDownIcon />,
       iconLabel: "23%",
     },
@@ -250,7 +255,7 @@ export default function ElectionComponent() {
         if (res.data.status === "ok") {
           window.alert("Election started Successfully");
           setStartButtonClick(true);
-        }else{
+        } else {
           window.alert(res.data.error);
         }
       });
@@ -285,6 +290,26 @@ export default function ElectionComponent() {
       window.alert(error.message);
       setStartButtonClick(false);
     }
+  };
+
+  const getTotalVotersAndVotes = () => {
+    const abi = contractData.abi;
+    const address = contractData.contractAddress;
+    const contract = new web3.eth.Contract(abi, address);
+
+    contract.methods
+      .totalVoter()
+      .call()
+      .then(function (result) {
+        setTotalVoters(result);
+      });
+
+    contract.methods
+      .totalVotes()
+      .call()
+      .then(function (result) {
+        setTotalVotes(result);
+      });
   };
 
   return (
