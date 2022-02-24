@@ -16,7 +16,7 @@ import { Button } from "../ButtonElement";
 import { ElectionState } from "../../ElectionContext";
 
 const HeroSection = () => {
-  const { account } = ElectionState();
+  const { account, setAlert } = ElectionState();
   const [voter, setVoter] = useState(false);
   const [name, setName] = useState("");
   const history = useNavigate();
@@ -24,14 +24,13 @@ const HeroSection = () => {
 
   useEffect(() => {
     window.WriteItJS.startAnimationOfNode("#first");
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (account.wallet) {
       checkVoterStatus();
     } // eslint-disable-next-line
   }, [account]);
-
 
   const checkVoterStatus = async () => {
     const response = await fetch("http://localhost:5000/api/voterstatus", {
@@ -55,7 +54,14 @@ const HeroSection = () => {
   };
 
   function gotToRegister() {
-    history("/register");
+    if (account.wallet) history("/register");
+    else
+      setAlert({
+        open: true,
+        message: "Please first connect wallet to continue",
+        type: "error",
+        time: 6000,
+      });
   }
 
   return (
@@ -76,7 +82,8 @@ const HeroSection = () => {
         </HeroH1>
         {voter && account.wallet ? (
           <HeroP>
-            Welcome {name} you are in the world of Blockchain based voting. Hurrah! You are now eligible to vote.
+            Welcome {name} you are in the world of Blockchain based voting.
+            Hurrah! You are now eligible to vote.
           </HeroP>
         ) : (
           <HeroP>
@@ -86,7 +93,8 @@ const HeroSection = () => {
         )}
 
         <HeroBtnWrapper>
-          {voter && account.wallet ? <Button
+          {voter && account.wallet ? (
+            <Button
               to="campaigns"
               smooth={true}
               duration={500}
@@ -97,7 +105,8 @@ const HeroSection = () => {
               dark="true"
             >
               Vote Now {<ArrowRight />}
-            </Button> : (
+            </Button>
+          ) : (
             <Button
               to="crypto"
               smooth={true}

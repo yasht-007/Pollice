@@ -56,17 +56,17 @@ const CampaignTable = () => {
   const [isElection, setIsElection] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  useEffect(() => {
-    if (isElection >= 2) {
-      setAlert({
-        open: true,
-        message:
-          "Election is not yet started! Voter Registeration phase is going on! Please wait...",
-        type: "error",
-        time: 5000,
-      });
-    }
-  }, [isElection]);
+  // useEffect(() => {
+  //   if (isElection >= 2) {
+  //     setAlert({
+  //       open: true,
+  //       message:
+  //         "Election is not yet started! Voter Registeration phase is going on! Please wait...",
+  //       type: "error",
+  //       time: 5000,
+  //     });
+  //   }
+  // }, [isElection]);
 
   useEffect(() => {
     fetchElections();
@@ -101,10 +101,16 @@ const CampaignTable = () => {
   };
 
   const handleTableClick = (estatus, eid) => {
-    if (estatus === "Deployed") {
-      setIsElection((isElection) => isElection + 1);
-    } else {
+    if (user.registerations.find((eid) => eid.approvalStatus === "Permitted")) {
       history(`/election/${eid}`);
+    } else if (estatus === "Deployed") {
+      setAlert({
+        open: true,
+        message:
+          "Election is not yet started! Voter Registeration phase is going on! Please wait...",
+        type: "error",
+        time: 5000,
+      });
     }
   };
 
@@ -263,8 +269,28 @@ const CampaignTable = () => {
                           <TableRow
                             className={classes.row}
                             key={row.organizationName}
+                            style={{
+                              cursor: "pointer",
+                            }}
                             onClick={() =>
-                              handleTableClick(row.electionStatus, row._id)
+                              account.wallet
+                                ? row.electionStatus === "Started" &&
+                                  voterRegStatus(row._id) === "Permitted"
+                                  ? handleTableClick(row.status, row._id)
+                                  : setAlert({
+                                      open: true,
+                                      message:
+                                        "Election is not yet started! Voter Registeration phase is going on! Please wait...",
+                                      type: "error",
+                                      time: 6000,
+                                    })
+                                : setAlert({
+                                    open: true,
+                                    message:
+                                      "Please first connect wallet or Register your account by clicking Register to vote button shown above",
+                                    type: "error",
+                                    time: 6000,
+                                  })
                             }
                           >
                             <TableCell component="th" scope="row">
