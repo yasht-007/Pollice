@@ -7,6 +7,7 @@ import Registeration from "./pages/Registeration";
 import ElectionForm from "./components/ElectionForm";
 import VerifyHost from "./components/VerifyHost";
 import Election from "./pages/Election";
+import Error404 from "./pages/Error404";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/electionform" element={<ElectionForm />} />
         <Route path="/election/:_id" element={<Election />} />
         <Route path="/election/host/admin" element={<VerifyHost />} />
+        <Route path="*" element={<Error404 />} />
       </Routes>
       <Alert />
     </Router>
