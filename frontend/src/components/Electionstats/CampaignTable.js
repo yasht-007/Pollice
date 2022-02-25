@@ -111,6 +111,13 @@ const CampaignTable = () => {
         type: "error",
         time: 5000,
       });
+    } else if (estatus === "Not Registered") {
+      setAlert({
+        open: true,
+        message: "You are not registered for this election! So you can't vote!",
+        type: "error",
+        time: 5000,
+      });
     }
   };
 
@@ -194,7 +201,7 @@ const CampaignTable = () => {
     }
   };
 
-  const voterRegStatus = (eId) => {
+  const voterRegStatus = (e) => {
     if (registered && user.registerations.length > 0) {
       if (user.registerations.find((e) => e.approvalStatus === "Requested")) {
         return "Requested";
@@ -340,13 +347,21 @@ const CampaignTable = () => {
                                 >
                                   {voterRegStatus(row._id)}
                                 </span>
-                              ) : (
+                              ) : row.electionStatus === "Deployed" ? (
                                 <TableButton
                                   type="submit"
                                   onClick={() => registerVoter(row)}
                                 >
                                   Register
                                 </TableButton>
+                              ) : (
+                                <span
+                                  style={{
+                                    fontSize: 17,
+                                  }}
+                                >
+                                  Not Registered
+                                </span>
                               )}
                             </TableCell>
                           </TableRow>

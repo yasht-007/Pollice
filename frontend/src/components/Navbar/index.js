@@ -26,6 +26,7 @@ import {
 const Navbar = ({ toggle }) => {
   const [scrollNav, setScrollNav] = useState(false);
   const { account, setAccount, setAlert } = ElectionState();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const changeNav = () => {
     if (window.scrollY >= 80) {
@@ -34,6 +35,10 @@ const Navbar = ({ toggle }) => {
       setScrollNav(false);
     }
   };
+
+  useEffect(() => {
+    localStorage.setItem("walletaddress", account.address);
+  }, [refreshKey]);
 
   useEffect(() => {
     window.addEventListener("scroll", changeNav);
@@ -55,7 +60,7 @@ const Navbar = ({ toggle }) => {
       setAlert({
         open: true,
         type: "success",
-        message: "Wallet discconnected !",
+        message: "Wallet disconnected !",
         time: 2000,
       });
     }
@@ -78,6 +83,7 @@ const Navbar = ({ toggle }) => {
       },
       showAlert(true)
     );
+    setRefreshKey((refreshKey) => refreshKey + 1);
   };
 
   const disconnectWallet = () => {
@@ -91,6 +97,7 @@ const Navbar = ({ toggle }) => {
       },
       showAlert(false)
     );
+    localStorage.removeItem("walletaddress");
   };
 
   return (

@@ -71,7 +71,7 @@ export default function Voters() {
     if (electionStatus === "Deployed" && account.wallet) {
       getContractData();
     }
-  }, [account]);
+  }, [account,electionStatus]);
 
   const columns = [
     { title: "Name", field: "name" },
@@ -208,7 +208,7 @@ export default function Voters() {
         ) : (
           <>
             <Container>
-              {electionStatus === "Deployed" ? (
+              {electionStatus === "Deployed" && account.wallet ? (
                 <MaterialTable
                   title="Voter Management:"
                   columns={columns}

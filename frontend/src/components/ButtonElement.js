@@ -108,3 +108,26 @@ export const ButtonOutlined = styled(Link)`
     display: none;
   }
 `;
+
+export const ButtonOutlined1 = styled(Link)`
+  background: transparent;
+  border: 1px solid #72f34b;
+  color: #72f34b;
+  padding: 2px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: none;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background: transparent;
+  }
+
+  @media screen and (max-width: 768px) {
+    text-decoration: none;
+    display: none;
+  }
+`;
+
