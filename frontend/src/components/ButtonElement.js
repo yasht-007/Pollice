@@ -86,6 +86,34 @@ export const Buttonthird = styled(Link)`
   }
 `;
 
+export const Buttonthird1 = styled(Link)`
+  border-radius: 10px;
+
+  background: #000;
+
+  white-space: nowrap;
+  padding: ${({ big }) => (big ? "14px 48px" : "12px 30px")};
+  color: ${({ dark }) => (dark ? "#000" : "#fff")};
+  font-size: ${({ fontBig }) => (fontBig ? "20px" : "16px")};
+
+  outline: none;
+  border: none;
+  width: 90px;
+  height: 35px;
+  cursor: pointer;
+  display: flex;
+  font-weight: 500;
+  justify-content: center;
+  justify-self: center;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+
+  @media screen and (max-width: 768px) {
+    text-decoration: none;
+    display: none;
+  }
+`;
+
 export const ButtonOutlined = styled(Link)`
   background: transparent;
   border: 1px solid #72f34b;
@@ -130,4 +158,3 @@ export const ButtonOutlined1 = styled(Link)`
     display: none;
   }
 `;
-

@@ -1,9 +1,22 @@
 import React from "react";
-import { CardContent, Grid, Typography, Card, Box } from "@material-ui/core";
+import {
+  CardContent,
+  Grid,
+  Typography,
+  Card,
+  Box,
+  Container,
+} from "@material-ui/core";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { makeStyles } from "@material-ui/core";
 import { blueGrey } from "@material-ui/core/colors";
+import {
+  ButtonOutlined,
+  Buttonsecond,
+  Buttonthird,
+  Buttonthird1,
+} from "../ButtonElement";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -21,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   pageTitle: {
     color: "#fff",
     border: "2px solid #fff",
-    maxWidth: "13ch",
+    maxWidth: "11ch",
     width: "auto",
     height: "auto",
     marginLeft: theme.spacing(1),
@@ -39,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "uppercase",
     color: "#000",
     fontWeight: "600",
-    fontFamily:"Montserrat sans-serif",
+    fontFamily: "Montserrat sans-serif",
     textAlign: "center",
     margin: theme.spacing(1, 0),
     fontSize: "21px",
@@ -49,6 +62,10 @@ const useStyles = makeStyles((theme) => ({
     color: blueGrey[900],
     textAlign: "center",
     textTransform: "initial",
+    width: "auto",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
     margin: theme.spacing(1, 0),
     fontSize: "18px",
     [theme.breakpoints.down("xs")]: {
@@ -63,8 +80,8 @@ const useStyles = makeStyles((theme) => ({
 
 const DisplayData = [
   {
-    label: "Election Status",
-    value: "Contract Deployed",
+    label: "Yash Tiwari",
+    value: "0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42",
     icon: <ArrowDropUpIcon />,
     iconLabel: "4%",
     color: "#0093E9",
@@ -75,7 +92,7 @@ const DisplayData = [
   },
   {
     label: "Voting Start",
-    value: "25th Feb",
+    value: "0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42",
     icon: <ArrowDropUpIcon />,
     iconLabel: "4%",
     color: "#8EC5FC",
@@ -86,7 +103,7 @@ const DisplayData = [
   },
   {
     label: "Voting End",
-    value: "28th Feb",
+    value: "0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42",
     icon: <ArrowDropUpIcon />,
     iconLabel: "9%",
     color: "#85FFBD",
@@ -97,7 +114,7 @@ const DisplayData = [
   },
   {
     label: "Time Deadline",
-    value: "10:00 am",
+    value: "0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42",
     icon: <ArrowDropDownIcon />,
     iconLabel: "23%",
     color: "#FBDA61",
@@ -106,54 +123,31 @@ const DisplayData = [
     first: "0%",
     second: "100%",
   },
-
   {
-    label: "Voting Percentage",
-    value: "30%",
+    label: "Time Deadline",
+    value: "0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42",
     icon: <ArrowDropDownIcon />,
     iconLabel: "23%",
-    color: "rgba(218,185,252,1)",
-    secondarycolor: "rgba(125,89,252,1)",
-    degree: "109.6deg",
-    first: "11.2%",
-    second: "91.1%",
+    color: "#FBDA61",
+    secondarycolor: "#FF5ACD",
+    degree: "45deg",
+    first: "0%",
+    second: "100%",
   },
   {
-    label: "Total Voters",
-    value: "390",
+    label: "Time Deadline",
+    value: "0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42",
     icon: <ArrowDropDownIcon />,
     iconLabel: "23%",
-    color: "rgba(129,252,255,1)",
-    secondarycolor: "rgba(255,175,207,1)",
-    degree: "76.5deg",
-    first: "22.8%",
-    second: "64.6%",
-  },
-  {
-    label: "Total Votes",
-    value: "150",
-    icon: <ArrowDropDownIcon />,
-    iconLabel: "23%",
-    color: "#0093E9",
-    secondarycolor: "lightgreen",
-    degree: "64.3deg",
-    first: "17.7%",
-    second: "112.1%",
-  },
-  {
-    label: "Your Status",
-    value: "Not Registered",
-    icon: <ArrowDropDownIcon />,
-    iconLabel: "23%",
-    color: "rgba(255,175,207,1)",
-    secondarycolor: "rgba(180,10,0,111)",
-    degree: "76.5deg",
-    first: "22.8%",
-    second: "64.6%",
+    color: "#FBDA61",
+    secondarycolor: "#FF5ACD",
+    degree: "45deg",
+    first: "0%",
+    second: "100%",
   },
 ];
 
-const TopCards = () => {
+const VotingCandidate = () => {
   const classes = useStyles();
   return (
     <>
@@ -169,23 +163,22 @@ const TopCards = () => {
         }}
       >
         <Typography variant="h5" className={classes.pageTitle}>
-        &nbsp;Election Stats&nbsp;
+          &nbsp;Voting Zone&nbsp;
         </Typography>
+
         <Grid container spacing={1}>
           {DisplayData.map((item, i) => (
             <Grid item xs={5} sm={3} key={i}>
               <Card
-                className={classes.root}
                 style={{
-                  backgroundColor: item.color,
-                  backgroundImage: `linear-gradient(${item.degree}, ${item.color} ${item.first}, ${item.secondarycolor} ${item.second})`,
-                  backdropFilter: "blur(16px) saturate(180%)",
-                  webkitBackdropFilter: " blur(16px) saturate(180%)",
+                  backgroundColor: "yellow",
                   borderRadius: "12px",
-                  border: "1px solid rgba(255, 255, 255, 0.125)",
                 }}
               >
                 <CardContent className={classes.cardContent}>
+                  <Typography variant="h6" style={{ textAlign: "center" }}>
+                    &nbsp;Candidate Details&nbsp;
+                  </Typography>
                   <Typography variant="body2" className={classes.cardLabel}>
                     {item.label}
                   </Typography>
@@ -196,13 +189,16 @@ const TopCards = () => {
                   >
                     {item.value}
                   </Typography>
-                  <Typography
-                    component="p"
+                  <Container
                     style={{
-                      textAlign: "center",
-                      marginBottom: "0px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
-                  ></Typography>
+                  >
+                    {" "}
+                    <Buttonthird1>Vote</Buttonthird1>
+                  </Container>
                 </CardContent>
               </Card>
             </Grid>
@@ -213,4 +209,4 @@ const TopCards = () => {
   );
 };
 
-export default TopCards;
+export default VotingCandidate;
