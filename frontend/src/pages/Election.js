@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import ElectionChrono from "../components/Voting/ElectionChrono";
@@ -14,6 +14,11 @@ const Election = () => {
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [])
+  
 
   return (
     <>

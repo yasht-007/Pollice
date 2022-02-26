@@ -201,22 +201,29 @@ const CampaignTable = () => {
     }
   };
 
-  const voterRegStatus = (e) => {
-    if (registered && user.registerations.length > 0) {
-      if (user.registerations.find((e) => e.approvalStatus === "Requested")) {
-        return "Requested";
-      } else if (
-        user.registerations.find((e) => e.approvalStatus === "Permitted")
-      ) {
-        return "Permitted";
-      } else if (
-        user.registerations.find((e) => e.approvalStatus === "Rejected")
-      ) {
-        return "Rejected";
-      } else {
-        return "Not Registered";
+  const voterRegStatus = (elI) => {
+
+    for(let i=0; i<user.registerations.length; i++){
+      if(user.registerations[i].eId === elI){
+        return user.registerations[i].approvalStatus;
       }
     }
+   
+    // if (registered && user.registerations.length > 0) {
+    //   if (user.registerations.find((elI) => elI.approvalStatus === "Requested")) {
+    //     return "Requested";
+    //   } else if (
+    //     user.registerations.find((elI) => elI.approvalStatus === "Permitted")
+    //   ) {
+    //     return "Permitted";
+    //   } else if (
+    //     user.registerations.find((elI) => elI.approvalStatus === "Rejected")
+    //   ) {
+    //     return "Rejected";
+    //   } else {
+    //     return "Not Registered";
+    //   }
+    // }
   };
 
   return (

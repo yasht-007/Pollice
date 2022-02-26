@@ -176,7 +176,7 @@ const VotingCandidate = () => {
                 }}
               >
                 <CardContent className={classes.cardContent}>
-                  <Typography variant="h6" style={{ textAlign: "center" }}>
+                  <Typography variant="h6" style={{ textAlign: "center",color:"#000" }}>
                     &nbsp;Candidate Details&nbsp;
                   </Typography>
                   <Typography variant="body2" className={classes.cardLabel}>
