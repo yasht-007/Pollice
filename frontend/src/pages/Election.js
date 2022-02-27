@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import ElectionChrono from "../components/Voting/ElectionChrono";
+import Evoting from "../components/Voting/Evoting";
 import HostDetails from "../components/Voting/HostDetails";
 import Navbar from "../components/Voting/Navbar";
 import TopCards from "../components/Voting/TopCards";
-import VotingCandidate from "../components/Voting/VotingCandidate";
+
 
 const Election = () => {
   const { _id } = useParams();
@@ -17,8 +18,7 @@ const Election = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [])
-  
+  }, []);
 
   return (
     <>
@@ -33,9 +33,10 @@ const Election = () => {
         <TopCards />
         <ElectionChrono />
         <HostDetails />
-        <VotingCandidate />
+        <Evoting />
         <Footer />
       </div>
+      
     </>
   );
 };

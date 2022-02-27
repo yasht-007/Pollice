@@ -98,7 +98,7 @@ export const Buttonthird1 = styled(Link)`
 
   outline: none;
   border: none;
-  width: 90px;
+  width: auto;
   height: 35px;
   cursor: pointer;
   display: flex;
@@ -108,6 +108,11 @@ export const Buttonthird1 = styled(Link)`
   align-items: center;
   transition: all 0.2s ease-in-out;
 
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background: #fff;
+    color: #000;
+  }
   @media screen and (max-width: 768px) {
     text-decoration: none;
     display: none;
