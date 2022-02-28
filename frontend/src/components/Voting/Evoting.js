@@ -1,10 +1,11 @@
-import { makeStyles, Typography } from "@material-ui/core";
+import { Button, makeStyles, Typography } from "@material-ui/core";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ElectionState } from "../../ElectionContext";
-import { Buttonthird1 } from "../ButtonElement";
+import { Buttonthird1, ButtonVote } from "../ButtonElement";
 import web3 from "../../config/web3";
+import { checkWalletAvailable } from "../../config/web3Action";
 
 const useStyles = makeStyles((theme) => ({
   space: {
@@ -111,15 +112,30 @@ const useStyles = makeStyles((theme) => ({
 const Evoting = () => {
   const classes = useStyles();
   const { _id } = useParams();
-  const { account, proposal, setAlert } = ElectionState();
+  const {
+    account,
+    proposal,
+    setAlert,
+    contractData,
+    setVoterStatus,
+    voterStatus,
+  } = ElectionState();
   const [candidates, setCandidates] = React.useState([]);
+  const [cAddress, setCAddress] = React.useState("");
+  const [refreshKey, setRefreshKey] = React.useState(0);
 
   useEffect(() => {
     if (account.wallet) {
       getCandidates();
+      checkAddress();
     }
   }, [account]);
-  
+
+  useEffect(() => {
+    if (refreshKey !== 0) {
+      getVoterStatus();
+    }
+  }, [refreshKey]);
 
   const getCandidates = async () => {
     try {
@@ -147,6 +163,127 @@ const Evoting = () => {
         type: "error",
         time: 5000,
       });
+    }
+  };
+
+  async function checkAddress() {
+    try {
+      await window.ethereum
+        .request({
+          method: "eth_requestAccounts",
+        })
+        .then((res) => {
+          setCAddress(res[0]);
+        });
+    } catch (error) {
+      setAlert({
+        open: true,
+        message: error.message,
+        type: "error",
+        time: 5000,
+      });
+    }
+  }
+
+  const updateToDatabase = async () => {
+    const voteStats = await axios.post(
+      "http://localhost:5000/api/election/vote",
+      {
+        id: _id,
+        walletAddress: account.address,
+      }
+    );
+
+    if (voteStats.data.status === "ok") {
+      setAlert({
+        open: true,
+        message: "You have successfully voted",
+        type: "success",
+        time: 5000,
+      });
+
+      setRefreshKey((refreshKey) => refreshKey + 1);
+    } else {
+      setAlert({
+        open: true,
+        message: voteStats.data.error,
+        type: "error",
+        time: 5000,
+      });
+    }
+  };
+
+  const voteCandidate = async (candidateId, candidateName) => {
+    if (
+      window.confirm(
+        "Please confirm that your metamask wallet is unlocked in metamask extension. I am Sure that my metamask wallet is unlocked!"
+      )
+    ) {
+      if (checkWalletAvailable()) {
+        if (
+          cAddress ===
+          JSON.parse(localStorage.getItem("accountDetails")).address
+        ) {
+          const abi = contractData.abi;
+          const contractaddress = contractData.contractAddress;
+          const contract = new web3.eth.Contract(abi, contractaddress);
+
+          await contract.methods
+            .doVote(candidateId, candidateName)
+            .send({
+              from: account.address,
+            })
+            .then((result) => {
+              if (
+                result.events.electionVoteUpdate !== undefined ||
+                result.events.electionVoteUpdate !== null
+              ) {
+                updateToDatabase();
+              }
+            });
+        } else {
+          setAlert({
+            open: true,
+            message: "You are not allowed to vote",
+            type: "error",
+            time: 5000,
+          });
+        }
+      } else {
+        setAlert({
+          open: true,
+          message:
+            "Metamask wallet is not available in your browser please install it then try again",
+          type: "error",
+          time: 6000,
+        });
+      }
+    } else {
+      setAlert({
+        open: true,
+        message:
+          "Please ensure that your metamask wallet is unlocked before voting",
+        type: "warning",
+        time: 5000,
+      });
+    }
+  };
+
+  const getVoterStatus = async () => {
+    const voteStatus = await axios.post(
+      "http://localhost:5000/api/election/getmyvotingstatus",
+      {
+        id: _id,
+        walletAddress: account.address,
+      }
+    );
+
+    if (voteStatus.data.status === "ok") {
+      if (voteStatus.data.voteIStatus === true) {
+        setVoterStatus("Voted");
+      } else {
+        setVoterStatus("Not Voted");
+      }
     }
   };
 
@@ -191,9 +328,14 @@ const Evoting = () => {
           </div>
         </div>
         <div className={classes.container} id="ctn_1">
-          {candidates.map((candidate, cNo) => {
+          {candidates.map((candidate, index) => {
             return (
-              <div className={classes.card}>
+              <div
+                className={classes.card}
+                style={{
+                  cursor: voterStatus === "Not Voted" ? "pointer" : "not-allowed",
+                }}
+              >
                 <h1 style={{ color: "#FEE3EC" }}>#Candidate Info</h1>
 
                 <div
@@ -204,7 +346,7 @@ const Evoting = () => {
                   }}
                 >
                   <Typography variant="h5">Identification No:&nbsp;</Typography>
-                  <Typography variant="h5">{++cNo}</Typography>
+                  <Typography variant="h5">{candidate.cId}</Typography>
                 </div>
 
                 <div
@@ -247,7 +389,15 @@ const Evoting = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Buttonthird1>Vote Candidate</Buttonthird1>
+                  <ButtonVote
+                    onClick={() => voteCandidate(candidate.cId, candidate.name)}
+                    style={{
+                      pointerEvents: voterStatus === "Voted" ? "none" : "auto",
+                      cursor: voterStatus === "Voted" ? "not-allowed" : "auto",
+                    }}
+                  >
+                    Vote Candidate
+                  </ButtonVote>
                 </div>
               </div>
             );

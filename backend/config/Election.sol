@@ -123,7 +123,7 @@ contract Election{
     }
 
 
-    function doVote(uint  _candidateId,string memory _candidateName) 
+    function doVote(uint _candidateId,string memory _candidateName) 
         public
         inState(State.Voting)
     {

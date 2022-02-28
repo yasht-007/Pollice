@@ -723,6 +723,10 @@ app.post("/api/getCandidates", async (req, res) => {
     if (!getCandidates || getCandidates === null) {
       return res.json({ status: "error", error: "Invalid Candidates" });
     } else {
+      var cNo = 1;
+      for (let i = 0; i < getCandidates.candidates.length; i++) {
+        getCandidates.candidates[i].cId = cNo++;
+      }
       return res.json({ status: "ok", candidates: getCandidates.candidates });
     }
   } catch (error) {
@@ -746,6 +750,33 @@ app.post("/api/election/getmyvotingstatus", async (req, res) => {
       return res.json({
         status: "ok",
         voteIStatus: getVoteStatus.voters[0].voted,
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/election/vote", async (req, res) => {
+  try {
+    const doVote = await ElectionHost.updateOne(
+      {
+        _id: req.body.id,
+        "voters.walletAddress": req.body.walletAddress,
+      },
+      {
+        $set: {
+          "voters.$.voted": true,
+        },
+      }
+    );
+
+    if (doVote.modifiedCount >= 1) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({
+        status: "error",
+        error: "Error in voting! Please contact support",
       });
     }
   } catch (error) {

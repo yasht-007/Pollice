@@ -189,7 +189,7 @@ const TopCards = () => {
       label: "Voting Percentage",
       value:
         account.wallet && host.data.electionStatus !== "Deployed"
-          ? (totalvoter * totalvotes) / 100
+          ? (totalvotes / totalvoter) * 100 + "%"
           : "NA",
       icon: <ArrowDropDownIcon />,
       iconLabel: "23%",
