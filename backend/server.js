@@ -56,6 +56,7 @@ app.post("/api/election/host", async (req, res) => {
       typeOfOrg: req.body.typeoforg,
       eStartDate: req.body.startdate,
       eEndDate: req.body.enddate,
+      eResultDate: req.body.resultdate,
       purpose: req.body.purpose,
       address: req.body.address,
       status: "pending",
@@ -171,6 +172,7 @@ app.post("/api/host/getdata", jwtVerify, async (req, res) => {
         address: host.address,
         eStartDate: host.eStartDate,
         eEndDate: host.eEndDate,
+        eResultDate: host.eResultDate,
         electionStatus: host.electionStatus,
       };
 
@@ -306,6 +308,7 @@ app.post("/api/host/setcontractandabi", jwtVerify, async (req, res) => {
             walletAddress: req.body.walletAddress,
           },
           electionStatus: "Deployed",
+          eDeployDate: req.body.deployDate,
         },
       }
     );
@@ -621,6 +624,129 @@ app.post("/api/host/approvedvoters", jwtVerify, async (req, res) => {
       return res.json({ status: "error", error: "Invalid Voters" });
     } else {
       return res.json({ status: "ok", approvedvoters: approvedVoters });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/getElectionHostData", async (req, res) => {
+  const ehData = {
+    organizationName: "",
+    email: "",
+    contactNumber: "",
+    regNo: "",
+    typeOfOrg: "",
+    purpose: "",
+    address: "",
+    eStartDate: "",
+    eEndDate: "",
+    eResultDate: "",
+    eDeployDate: "",
+    electionStatus: "",
+  };
+
+  try {
+    const getHost = await ElectionHost.findOne(
+      { _id: req.body.id },
+      {
+        organizationName: 1,
+        email: 1,
+        contactNumber: 1,
+        regNo: 1,
+        typeOfOrg: 1,
+        purpose: 1,
+        address: 1,
+        eStartDate: 1,
+        eEndDate: 1,
+        eResultDate: 1,
+        eDeployDate: 1,
+        electionStatus: 1,
+      }
+    );
+
+    if (!getHost || getHost === null) {
+      return res.json({ status: "error", error: "Invalid Host Data" });
+    } else {
+      ehData.organizationName = getHost.organizationName;
+      ehData.email = getHost.email;
+      ehData.contactNumber = getHost.contactNumber;
+      ehData.regNo = getHost.regNo;
+      ehData.typeOfOrg = getHost.typeOfOrg;
+      ehData.purpose = getHost.purpose;
+      ehData.address = getHost.address;
+      ehData.eStartDate = getHost.eStartDate;
+      ehData.eEndDate = getHost.eEndDate;
+      ehData.eResultDate = getHost.eResultDate;
+      ehData.eDeployDate = getHost.eDeployDate;
+      ehData.electionStatus = getHost.electionStatus;
+      return res.json({ status: "ok", ehData: ehData });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/getContractDetails", async (req, res) => {
+  try {
+    const ContractData = await ElectionHost.findOne(
+      {
+        _id: req.body.id,
+      },
+      {
+        contract: 1,
+      }
+    );
+
+    if (!ContractData || ContractData === null) {
+      return res.json({ status: "error", error: "Invalid Contract Data" });
+    } else {
+      return res.json({
+        status: "ok",
+        contractData: ContractData.contract,
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/getCandidates", async (req, res) => {
+  try {
+    const getCandidates = await ElectionHost.findOne(
+      { _id: req.body.id },
+      {
+        candidates: 1,
+      }
+    );
+
+    if (!getCandidates || getCandidates === null) {
+      return res.json({ status: "error", error: "Invalid Candidates" });
+    } else {
+      return res.json({ status: "ok", candidates: getCandidates.candidates });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/election/getmyvotingstatus", async (req, res) => {
+  try {
+    const getVoteStatus = await ElectionHost.findOne(
+      {
+        _id: req.body.id,
+        "voters.walletAddress": req.body.walletAddress,
+      },
+      {
+        "voters.$": 1,
+      }
+    );
+
+    if (getVoteStatus) {
+      return res.json({
+        status: "ok",
+        voteIStatus: getVoteStatus.voters[0].voted,
+      });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });

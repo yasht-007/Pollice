@@ -22,7 +22,7 @@ import axios from "axios";
 
 export default function Dashboard() {
   const classes = useStyles();
-  const { host, setHost } = ElectionHostState();
+  const { host, setHost, account } = ElectionHostState();
 
   useEffect(() => {
     getData();
@@ -46,7 +46,7 @@ export default function Dashboard() {
   const DisplayData = [
     {
       label: "Election Status",
-      value: host.data.electionStatus,
+      value: account.wallet ? host.data.electionStatus : "Not Connected",
       icon: <ArrowDropUpIcon />,
       iconLabel: "4%",
     },
@@ -128,6 +128,10 @@ export default function Dashboard() {
           </Typography>
           <Typography variant="subtitle" style={{ padding: "10px" }}>
             Address: &nbsp;{host.data.address}
+          </Typography>
+
+          <Typography variant="subtitle" style={{ padding: "10px" }}>
+            Result Date: &nbsp;{host.data.eResultDate}
           </Typography>
         </Container>
       </Box>

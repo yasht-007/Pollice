@@ -1,20 +1,24 @@
 import styled from "styled-components";
-import chipImg from "./chip.png";
 import voteImg from "./vote.png";
 import React from "react";
+import { ElectionState } from "../../ElectionContext";
+import {useParams} from "react-router-dom";
 
 export default function FrontSide() {
+  const {host} = ElectionState();
+  const {_id}= useParams();
+
   return (
     <Front>
       <Debit>Pollice Election Service</Debit>
       <Bank>#verified</Bank>
       <Chip src={voteImg}></Chip>
-      <Number>621081b397bcb57b59d38407</Number>
+      <Number>{_id}</Number>
       <Valid>
         <span>Reg No</span>
-        <span>78955</span>
+        <span>{host.data.regNo}</span>
       </Valid>
-      <CardHold>DDU Organization</CardHold>
+      <CardHold>{host.data.organizationName}</CardHold>
     </Front>
   );
 }

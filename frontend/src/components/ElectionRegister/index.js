@@ -25,6 +25,7 @@ const Register = () => {
   const [phoneNo, setPhoneNo] = useState("");
   const [startdate, setStartDate] = useState("");
   const [enddate, setEndDate] = useState("");
+  const [resultdate, setResultDate] = useState("");
   const [address, setAddress] = useState("");
   const [purpose, setPurpose] = useState("");
   const { setAlert } = ElectionState();
@@ -61,6 +62,7 @@ const Register = () => {
       phoneNo === "" ||
       startdate === "" ||
       enddate === "" ||
+      resultdate === "" ||
       address === ""
     ) {
       setAlert({
@@ -94,6 +96,7 @@ const Register = () => {
           phoneNo: phoneNo,
           startdate: startdate,
           enddate: enddate,
+          resultdate: resultdate,
           address: address,
           typeoforg: select,
           purpose: purpose,
@@ -203,6 +206,14 @@ const Register = () => {
                 required
                 onChange={(e) => setEndDate(e.target.value)}
               />
+
+              <FormLabel htmlFor="for">Election Result Date : </FormLabel>
+              <FormInput
+                type="date"
+                required
+                onChange={(e) => setResultDate(e.target.value)}
+              />
+
               <FormLabel htmlFor="for">Purpose of Election : </FormLabel>
               <FormInput
                 type="text"

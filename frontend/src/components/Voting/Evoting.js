@@ -1,6 +1,10 @@
 import { makeStyles, Typography } from "@material-ui/core";
-import React from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { ElectionState } from "../../ElectionContext";
 import { Buttonthird1 } from "../ButtonElement";
+import web3 from "../../config/web3";
 
 const useStyles = makeStyles((theme) => ({
   space: {
@@ -106,8 +110,48 @@ const useStyles = makeStyles((theme) => ({
 
 const Evoting = () => {
   const classes = useStyles();
+  const { _id } = useParams();
+  const { account, proposal, setAlert } = ElectionState();
+  const [candidates, setCandidates] = React.useState([]);
+
+  useEffect(() => {
+    if (account.wallet) {
+      getCandidates();
+    }
+  }, [account]);
+  
+
+  const getCandidates = async () => {
+    try {
+      const getCandidateData = await axios.post(
+        "http://localhost:5000/api/getCandidates",
+        {
+          id: _id,
+        }
+      );
+
+      if (getCandidateData.data.status === "ok") {
+        setCandidates(getCandidateData.data.candidates);
+      } else {
+        setAlert({
+          open: true,
+          message: "error in getting candidates",
+          type: "error",
+          time: 5000,
+        });
+      }
+    } catch (error) {
+      setAlert({
+        open: true,
+        message: error.message,
+        type: "error",
+        time: 5000,
+      });
+    }
+  };
+
   return (
-    <div className={classes.space}>
+    <div className={classes.space} id="votingpanel">
       <div
         style={{ display: "flex", flexDirection: "column", marginTop: "60px" }}
       >
@@ -142,301 +186,72 @@ const Evoting = () => {
                 fontWeight: "400",
               }}
             >
-              Select Your next CFO for Company
+              {proposal}
             </Typography>
           </div>
         </div>
-
         <div className={classes.container} id="ctn_1">
-          <div className={classes.card}>
-            <h1 style={{ color: "#FEE3EC" }}>#Candidate Info</h1>
+          {candidates.map((candidate, cNo) => {
+            return (
+              <div className={classes.card}>
+                <h1 style={{ color: "#FEE3EC" }}>#Candidate Info</h1>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "20px",
-              }}
-            >
-              <Typography variant="h5">Identification No:&nbsp; </Typography>
-              <Typography variant="h5">1</Typography>
-            </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "20px",
+                  }}
+                >
+                  <Typography variant="h5">Identification No:&nbsp;</Typography>
+                  <Typography variant="h5">{++cNo}</Typography>
+                </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Name:&nbsp; </Typography>
-              <Typography variant="h5">Yash Tiwari</Typography>
-            </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "10px",
+                  }}
+                >
+                  <Typography variant="h5">Name:&nbsp; </Typography>
+                  <Typography variant="h5">{candidate.name}</Typography>
+                </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Address:&nbsp; </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42
-              </Typography>
-            </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "10px",
+                  }}
+                >
+                  <Typography variant="h5">Address:&nbsp; </Typography>
+                  <Typography
+                    variant="h5"
+                    style={{
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {candidate.walletAddress}
+                  </Typography>
+                </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Buttonthird1>Vote Candidate</Buttonthird1>
-            </div>
-          </div>
-
-          <div className={classes.card}>
-            <h1 style={{ color: "#FEE3EC" }}>Candidate Details</h1>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "20px",
-              }}
-            >
-              <Typography variant="h5">Identification No:&nbsp; </Typography>
-              <Typography variant="h5">1</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Name:&nbsp; </Typography>
-              <Typography variant="h5">Yash Tiwari</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Address:&nbsp; </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42
-              </Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Buttonthird1>Vote Candidate</Buttonthird1>
-            </div>
-          </div>
-
-          <div className={classes.card}>
-            <h1 style={{ color: "#FEE3EC" }}>Candidate Details</h1>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "20px",
-              }}
-            >
-              <Typography variant="h5">Identification No:&nbsp; </Typography>
-              <Typography variant="h5">1</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Name:&nbsp; </Typography>
-              <Typography variant="h5">Yash Tiwari</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Address:&nbsp; </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42
-              </Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Buttonthird1>Vote Candidate</Buttonthird1>
-            </div>
-          </div>
-
-          <div className={classes.card}>
-            <h1 style={{ color: "#FEE3EC" }}>Candidate Details</h1>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "20px",
-              }}
-            >
-              <Typography variant="h5">Identification No:&nbsp; </Typography>
-              <Typography variant="h5">1</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Name:&nbsp; </Typography>
-              <Typography variant="h5">Yash Tiwari</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Address:&nbsp; </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42
-              </Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Buttonthird1>Vote Candidate</Buttonthird1>
-            </div>
-          </div>
-
-          <div className={classes.card}>
-            <h1 style={{ color: "#FEE3EC" }}>Candidate Details</h1>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "20px",
-              }}
-            >
-              <Typography variant="h5">Identification No:&nbsp; </Typography>
-              <Typography variant="h5">1</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Name:&nbsp; </Typography>
-              <Typography variant="h5">Yash Tiwari</Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <Typography variant="h5">Address:&nbsp; </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                0x6e93b6599A5eff8a4DD51343C569c1e6f6A61C42
-              </Typography>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Buttonthird1>Vote Candidate</Buttonthird1>
-            </div>
-          </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "10px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Buttonthird1>Vote Candidate</Buttonthird1>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

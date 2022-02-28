@@ -1,17 +1,37 @@
 import styled from "styled-components";
 import React from "react";
+import { ElectionState } from "../../ElectionContext";
+import { Typography } from "@material-ui/core";
 
 export default function BackSide() {
+  const { host } = ElectionState();
   return (
     <Back>
       <Debit>Pollice Election Service</Debit>
       <Bank>#verified</Bank>
-      <Number>Contact:- +91 7016183012</Number>
+      <Number>{"Contact:- +91 " + host.data.contactNumber}</Number>
       <Valid>
-        <span>Email</span>
-        <span>yash@gmail.com</span>
+        <Typography
+          variant="h6"
+          style={{
+            letterSpacing: "2px",
+            fontFamily: `Orbitron, sans-serif`,
+          }}
+        >
+          Email:-
+        </Typography>
+        <Typography
+          variant="h6"
+          style={{
+            fontFamily: `Orbitron, sans-serif`,
+            letterSpacing: "2px",
+          }}
+        >
+          &nbsp;&nbsp;{host.data.email}
+        </Typography>
       </Valid>
-      <CardHold>School/College</CardHold>
+
+      <CardHold>{"Type of Org:- " + host.data.typeOfOrg}</CardHold>
     </Back>
   );
 }
@@ -78,7 +98,7 @@ const Number = styled.h3`
 
 const Valid = styled.h5`
   position: absolute;
-  bottom: 90px;
+  bottom: 80px;
   left: 40px;
   display: flex;
   justify-content: center;

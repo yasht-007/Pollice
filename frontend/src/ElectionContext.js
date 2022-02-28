@@ -23,6 +23,27 @@ const ElectionContext = ({ children }) => {
   const [elections, setElections] = useState([]);
   const [user, setUser] = useState(null);
   const [registered, setRegistered] = useState(false);
+  const [host, setHost] = useState({
+    data: {
+      organizationName: "",
+      email: "",
+      contactNumber: "",
+      regNo: "",
+      typeOfOrg: "",
+      purpose: "",
+      address: "",
+      eStartDate: "",
+      eEndDate: "",
+      eDeployDate: "",
+      electionStatus: "",
+    },
+  });
+
+  const [contractData, setContractData] = useState([]);
+  const [proposal, setProposal] = React.useState("");
+  const [totalvoter, setTotalVoter] = React.useState("NA");
+  const [totalvotes, setTotalVotes] = React.useState("NA");
+  const [voterStatus,setVoterStatus] = React.useState("Not Voted");
 
   const fetchElections = async () => {
     setLoading(true);
@@ -61,7 +82,6 @@ const ElectionContext = ({ children }) => {
       });
   };
 
-  
   return (
     <>
       <Election.Provider
@@ -77,6 +97,18 @@ const ElectionContext = ({ children }) => {
           fetchUser,
           registered,
           setRegistered,
+          host,
+          setHost,
+          contractData,
+          setContractData,
+          proposal,
+          setProposal,
+          totalvoter,
+          setTotalVoter,
+          totalvotes,
+          setTotalVotes,
+          voterStatus,
+          setVoterStatus,
         }}
       >
         {children}

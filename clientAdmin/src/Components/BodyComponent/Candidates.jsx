@@ -46,15 +46,13 @@ export default function Candidates() {
     if (account.wallet) {
       getElectionStatus();
 
-      if (electionStatus === "Deployed") {
-        setButtonClick(true);
-      } else if (electionStatus === "Started") {
-        setButtonClick(true);
-      } else {
+      if (electionStatus === "Not Active") {
         setButtonClick(false);
+      } else {
+        setButtonClick(true);
       }
     } else {
-      setButtonClick(false);
+      setButtonClick(true);
     }
   }, [account, electionStatus]);
 

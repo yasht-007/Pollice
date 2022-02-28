@@ -102,6 +102,7 @@ const CampaignTable = () => {
 
   const handleTableClick = (estatus, eid) => {
     if (user.registerations.find((eid) => eid.approvalStatus === "Permitted")) {
+      localStorage.setItem("accountDetails", JSON.stringify(account));
       history(`/election/${eid}`);
     } else if (estatus === "Deployed") {
       setAlert({
@@ -202,13 +203,12 @@ const CampaignTable = () => {
   };
 
   const voterRegStatus = (elI) => {
-
-    for(let i=0; i<user.registerations.length; i++){
-      if(user.registerations[i].eId === elI){
+    for (let i = 0; i < user.registerations.length; i++) {
+      if (user.registerations[i].eId === elI) {
         return user.registerations[i].approvalStatus;
       }
     }
-   
+
     // if (registered && user.registerations.length > 0) {
     //   if (user.registerations.find((elI) => elI.approvalStatus === "Requested")) {
     //     return "Requested";
@@ -288,7 +288,7 @@ const CampaignTable = () => {
                             }}
                             onClick={() =>
                               account.wallet
-                                ? row.electionStatus === "Started" &&
+                                ? row.electionStatus !== "Not Active" &&
                                   voterRegStatus(row._id) === "Permitted"
                                   ? handleTableClick(row.status, row._id)
                                   : setAlert({

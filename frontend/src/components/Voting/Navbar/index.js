@@ -11,10 +11,14 @@ import {
   NavLinks,
   NavItem,
 } from "./NavbarElements";
+import DataAddress from "../../DataAddress";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ElectionState } from "../../../ElectionContext";
 
 const Navbar = ({ toggle }) => {
+  const {account} = ElectionState();
+  const { _id } = useParams();
   const [scrollNav, setScrollNav] = useState(false);
   const navigate = useNavigate();
 
@@ -81,7 +85,7 @@ const Navbar = ({ toggle }) => {
 
               <NavItem>
                 <NavLinks
-                  to=""
+                  to="votingpanel"
                   smooth={true}
                   duration={500}
                   spy={true}
@@ -91,6 +95,7 @@ const Navbar = ({ toggle }) => {
                   Vote
                 </NavLinks>
               </NavItem>
+              <DataAddress address={account.address} />
             </NavMenu>
           </NavbarContainer>
         </Nav>

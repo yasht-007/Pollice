@@ -50,19 +50,13 @@ export default function ElectionComponent() {
   const [proposal, setProposal] = useState("");
   const [buttonclick, setButtonClick] = useState(false);
   const [startbuttonclick, setStartButtonClick] = useState(false);
-  const [isDeployed, setIsDeployed] = useState(false);
+  const [isDeployed, setIsDeployed] = useState(0);
   const [totalVoters, setTotalVoters] = useState(0);
   const [totalVotes, setTotalVotes] = useState(0);
 
   useEffect(() => {
-    if (account.wallet && electionStatus === "Deployed") {
+    if (account.wallet && electionStatus === "Not Active") {
       getRequests();
-    }
-  }, [account, electionStatus]);
-
-  useEffect(() => {
-    if (account.wallet && electionStatus !== "Not Active") {
-      getContractData();
     }
   }, [account, electionStatus]);
 
@@ -84,6 +78,18 @@ export default function ElectionComponent() {
       setStartButtonClick(false);
     }
   }, [isDeployed, account, electionStatus]);
+
+  useEffect(() => {
+    if (
+      account.wallet &&
+      (electionStatus === "Deployed" ||
+        electionStatus === "Started" ||
+        electionStatus === "Ended" ||
+        electionStatus === "Result")
+    ) {
+      getContractData();
+    }
+  }, [account, electionStatus]);
 
   const DisplayData = [
     {
@@ -145,6 +151,19 @@ export default function ElectionComponent() {
   };
 
   const updateToDatabase = async (abi, contractAddress, defaultAccount) => {
+    var today = new Date();
+    var month;
+
+    var day = today.getDate() < 10 ? "0" + today.getDate() : today.getDate();
+
+    if (today.getMonth() + 1 < 10) {
+      month = "0" + (today.getMonth() + 1);
+    }
+
+    var deployDate = today.getFullYear() + "-" + month + "-" + day;
+
+    deployDate = deployDate.toString();
+
     await axios
       .post("http://localhost:5000/api/host/setcontractandabi", {
         headers: {
@@ -154,11 +173,12 @@ export default function ElectionComponent() {
         abi: abi,
         contractAddress: contractAddress,
         walletAddress: defaultAccount,
+        deployDate: deployDate,
       })
       .then((res) => {
         if (res.data.status === "ok") {
           window.alert("Contract Deployed Successfully");
-          setIsDeployed(true);
+          setIsDeployed((isDeployed) => isDeployed + 1);
         } else {
           window.alert("error");
         }
