@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { CardContent, Grid, Typography, Card, Box } from "@material-ui/core";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { makeStyles } from "@material-ui/core";
 import { blueGrey } from "@material-ui/core/colors";
 import { ElectionState } from "../../ElectionContext";
-import web3 from "../../config/web3";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -50,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "capitalize",
     color: blueGrey[900],
     textAlign: "center",
-    textTransform: "initial",
     margin: theme.spacing(1, 0),
     fontSize: "18px",
     [theme.breakpoints.down("xs")]: {
@@ -66,13 +64,13 @@ const useStyles = makeStyles((theme) => ({
 function ordinal_suffix_of(i) {
   var j = i % 10,
     k = i % 100;
-  if (j == 1 && k != 11) {
+  if (j === 1 && k !== 11) {
     return i + "st";
   }
-  if (j == 2 && k != 12) {
+  if (j === 2 && k !== 12) {
     return i + "nd";
   }
-  if (j == 3 && k != 13) {
+  if (j === 3 && k !== 13) {
     return i + "rd";
   }
   return i + "th";
@@ -86,7 +84,7 @@ const TopCards = () => {
   var startDate = host.data.eStartDate;
   startDate = new Date(startDate).toDateString();
 
-  if (startDate.charAt(8) == "0") {
+  if (startDate.charAt(8) === "0") {
     startDate =
       startDate.charAt(10) +
       ordinal_suffix_of(startDate.charAt(9)) +
@@ -103,7 +101,7 @@ const TopCards = () => {
   var endDate = host.data.eEndDate;
   endDate = new Date(endDate).toDateString();
 
-  if (endDate.charAt(8) == "0") {
+  if (endDate.charAt(8) === "0") {
     endDate =
       endDate.charAt(10) +
       ordinal_suffix_of(endDate.charAt(9)) +
@@ -121,7 +119,7 @@ const TopCards = () => {
     var deployDate = host.data.eDeployDate;
     deployDate = new Date(deployDate).toDateString();
 
-    if (deployDate.charAt(8) == "0") {
+    if (deployDate.charAt(8) === "0") {
       deployDate =
         deployDate.charAt(10) +
         ordinal_suffix_of(deployDate.charAt(9)) +

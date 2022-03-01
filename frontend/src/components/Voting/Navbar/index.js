@@ -13,12 +13,11 @@ import {
 } from "./NavbarElements";
 import DataAddress from "../../DataAddress";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ElectionState } from "../../../ElectionContext";
 
 const Navbar = ({ toggle }) => {
   const {account} = ElectionState();
-  const { _id } = useParams();
   const [scrollNav, setScrollNav] = useState(false);
   const navigate = useNavigate();
 

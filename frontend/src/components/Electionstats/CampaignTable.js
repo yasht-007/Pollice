@@ -18,7 +18,7 @@ import {
 import { ElectionState } from "../../ElectionContext";
 import Pagination from "@material-ui/lab/Pagination";
 import { useNavigate } from "react-router-dom";
-import { FormButton, TableButton } from "../ElectionRegister/RegisterElements";
+import { TableButton } from "../ElectionRegister/RegisterElements";
 import axios from "axios";
 
 const useStyles = makeStyles({
@@ -53,20 +53,6 @@ const CampaignTable = () => {
   } = ElectionState();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [isElection, setIsElection] = useState(0);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  // useEffect(() => {
-  //   if (isElection >= 2) {
-  //     setAlert({
-  //       open: true,
-  //       message:
-  //         "Election is not yet started! Voter Registeration phase is going on! Please wait...",
-  //       type: "error",
-  //       time: 5000,
-  //     });
-  //   }
-  // }, [isElection]);
 
   useEffect(() => {
     fetchElections();
@@ -76,13 +62,13 @@ const CampaignTable = () => {
   useEffect(() => {
     if (account.wallet) {
       fetchUser();
-    }
+    }// eslint-disable-next-line 
   }, [account]);
 
   useEffect(() => {
     if (user && account.wallet) {
       fetchVoterStatus();
-    }
+    }// eslint-disable-next-line 
   }, [user, account]);
 
   const darkTheme = createTheme({
@@ -123,8 +109,6 @@ const CampaignTable = () => {
   };
 
   const registerVoter = async (row) => {
-    setIsElection(0);
-
     if (!account.wallet) {
       setAlert({
         open: true,

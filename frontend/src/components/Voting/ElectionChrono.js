@@ -1,7 +1,6 @@
 import React from "react";
 import { Chrono } from "react-chrono";
-import { Button, makeStyles, Typography } from "@material-ui/core";
-import { ButtonOutlined1 } from "../ButtonElement";
+import { makeStyles, Typography } from "@material-ui/core";
 import { ElectionState } from "../../ElectionContext";
 
 const useStyles = makeStyles((theme) => ({

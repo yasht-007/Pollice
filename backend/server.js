@@ -784,6 +784,32 @@ app.post("/api/election/vote", async (req, res) => {
   }
 });
 
+app.post("/api/host/endelections", jwtVerify, async (req, res) => {
+  try {
+    const endVote = await ElectionHost.updateOne(
+      {
+        email: req.body.email,
+      },
+      {
+        $set: {
+          electionStatus: "Ended",
+        },
+      }
+    );
+
+    if (endVote.modifiedCount >= 1) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({
+        status: "error",
+        error: "Error in starting election! Please contact support",
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

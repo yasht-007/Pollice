@@ -61,7 +61,9 @@ export default function Voters() {
       getElectionStatus();
       if (electionStatus === "Deployed") {
         getRequests();
-      } else if (electionStatus === "Started") {
+      } else if (electionStatus === "Started" ||
+      electionStatus === "Ended" ||
+      electionStatus === "Result") {
         getApprovedVoters();
       }
     }

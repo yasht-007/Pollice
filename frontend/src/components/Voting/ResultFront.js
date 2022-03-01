@@ -1,53 +1,27 @@
 import styled from "styled-components";
+import voteImg from "./vote.png";
 import React from "react";
-import { ElectionState } from "../../ElectionContext";
+import { useParams } from "react-router-dom";
 import { Typography } from "@material-ui/core";
 
-export default function BackSide() {
-  const { host } = ElectionState();
+const ResultFront = () => {
+    const {_id} = useParams();
   return (
-    <Back>
-      <Debit>Pollice Election Service</Debit>
-      <Bank>#verified</Bank>
-      <Number>{"Contact:- +91 " + host.data.contactNumber}</Number>
+    <Front>
+      <Debit>Pollice Election</Debit>
+      <Bank>#result</Bank>
+      <Chip src={voteImg}></Chip>
+      <Number>{_id}</Number>
       <Valid>
-        <Typography
-          variant="h6"
-          style={{
-            letterSpacing: "2px",
-            fontFamily: `Orbitron, sans-serif`,
-          }}
-        >
-          Email:-
-        </Typography>
-        <Typography
-          variant="h6"
-          style={{
-            fontFamily: `Orbitron, sans-serif`,
-            letterSpacing: "2px",
-          }}
-        >
-          &nbsp;&nbsp;{host.data.email}
-        </Typography>
+        <Typography>Winner Id:-</Typography>
+        <Typography>&nbsp;&nbsp;1</Typography>
       </Valid>
-
-      <CardHold>{"Type of Org:- " + host.data.typeOfOrg}</CardHold>
-    </Back>
+      <CardHold>yash1232</CardHold>
+    </Front>
   );
-}
+};
 
-const Back = styled.div`
-  /* ::before {
-    content: "";
-    position: absolute;
-    bottom: 40px;
-    right: 40px;
-    width: 60px;
-    height: 60px;
-    background: #fff;
-    border-radius: 50%;
-    opacity: 0.5;
-  }
+const Front = styled.div`
   ::after {
     content: "";
     position: absolute;
@@ -55,11 +29,12 @@ const Back = styled.div`
     right: 80px;
     width: 60px;
     height: 60px;
-    background: #fff;
+    background: #01bf71;
     border-radius: 50%;
     opacity: 0.7;
-  } */
+  }
 `;
+
 const Debit = styled.h3`
   position: absolute;
   left: 40px;
@@ -78,9 +53,16 @@ const Bank = styled.h3`
   font-size: 24px;
 `;
 
+const Chip = styled.img`
+  position: absolute;
+  top: 80px;
+  left: 50px;
+  max-width: 64px;
+`;
+
 const Number = styled.h3`
   position: absolute;
-  bottom: 130px;
+  bottom: 120px;
   left: 40px;
   letter-spacing: 6px;
   color: #fff;
@@ -94,7 +76,7 @@ const Valid = styled.h5`
   bottom: 80px;
   left: 40px;
   display: flex;
-  justify-content: center;
+  justify-content: baseline;
   align-items: center;
   color: #fff;
   font-weight: 300;
@@ -118,3 +100,5 @@ const CardHold = styled.h5`
   font-size: 16px;
   letter-spacing: 2px;
 `;
+
+export default ResultFront;

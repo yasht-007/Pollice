@@ -50,13 +50,21 @@ export default function ElectionComponent() {
   const [proposal, setProposal] = useState("");
   const [buttonclick, setButtonClick] = useState(false);
   const [startbuttonclick, setStartButtonClick] = useState(false);
+  const [endbuttonclick, setEndButtonClick] = useState(false);
   const [isDeployed, setIsDeployed] = useState(0);
   const [totalVoters, setTotalVoters] = useState(0);
   const [totalVotes, setTotalVotes] = useState(0);
+  const [refreshKey,setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (account.wallet && electionStatus === "Not Active") {
       getRequests();
+    }
+  }, [account, electionStatus]);
+
+  useEffect(() => {
+    if (account.wallet && electionStatus !== "Not Active") {
+      getContractData();
     }
   }, [account, electionStatus]);
 
@@ -70,6 +78,11 @@ export default function ElectionComponent() {
         getTotalVotersAndVotes();
         setButtonClick(true);
         setStartButtonClick(true);
+      } else if (electionStatus === "Ended") {
+        getTotalVotersAndVotes();
+        setButtonClick(true);
+        setStartButtonClick(true);
+        setEndButtonClick(true);
       } else {
         setButtonClick(false);
       }
@@ -78,18 +91,6 @@ export default function ElectionComponent() {
       setStartButtonClick(false);
     }
   }, [isDeployed, account, electionStatus]);
-
-  useEffect(() => {
-    if (
-      account.wallet &&
-      (electionStatus === "Deployed" ||
-        electionStatus === "Started" ||
-        electionStatus === "Ended" ||
-        electionStatus === "Result")
-    ) {
-      getContractData();
-    }
-  }, [account, electionStatus]);
 
   const DisplayData = [
     {
@@ -101,21 +102,35 @@ export default function ElectionComponent() {
     {
       label: "Total Voters",
       value:
-        account.wallet && electionStatus === "Started" ? totalVoters : "NA",
+        account.wallet &&
+        (electionStatus === "Started" ||
+          electionStatus === "Ended" ||
+          electionStatus === "Result")
+          ? totalVoters
+          : "NA",
       icon: <ArrowDropUpIcon />,
       iconLabel: "4%",
     },
     {
       label: "Total Votes",
-      value: account.wallet && electionStatus === "Started" ? totalVotes : "NA",
+      value:
+        account.wallet &&
+        (electionStatus === "Started" ||
+          electionStatus === "Ended" ||
+          electionStatus === "Result")
+          ? totalVotes
+          : "NA",
       icon: <ArrowDropUpIcon />,
       iconLabel: "9%",
     },
     {
       label: "Voting Percentage",
       value:
-        account.wallet && electionStatus === "Started"
-          ? (totalVoters * totalVotes) / 100
+        account.wallet &&
+        (electionStatus === "Started" ||
+          electionStatus === "Ended" ||
+          electionStatus === "Result")
+          ? (totalVotes / totalVoters) * 100
           : "NA",
       icon: <ArrowDropDownIcon />,
       iconLabel: "23%",
@@ -177,6 +192,7 @@ export default function ElectionComponent() {
       })
       .then((res) => {
         if (res.data.status === "ok") {
+          setStartButtonClick(true);
           window.alert("Contract Deployed Successfully");
           setIsDeployed((isDeployed) => isDeployed + 1);
         } else {
@@ -274,8 +290,10 @@ export default function ElectionComponent() {
       .then((res) => {
         if (res.data.status === "ok") {
           window.alert("Election started Successfully");
+          setIsDeployed((isDeployed) => isDeployed + 1);
           setStartButtonClick(true);
         } else {
+          setStartButtonClick(false);
           window.alert(res.data.error);
         }
       });
@@ -312,24 +330,75 @@ export default function ElectionComponent() {
     }
   };
 
-  const getTotalVotersAndVotes = () => {
+  const getTotalVotersAndVotes = async () => {
     const abi = contractData.abi;
     const address = contractData.contractAddress;
     const contract = new web3.eth.Contract(abi, address);
 
-    contract.methods
+    await contract.methods
       .totalVoter()
       .call()
       .then(function (result) {
         setTotalVoters(result);
       });
 
-    contract.methods
+    await contract.methods
       .totalVotes()
       .call()
       .then(function (result) {
         setTotalVotes(result);
       });
+  };
+
+  const updateEndStatus = async () => {
+    await axios
+      .post("http://localhost:5000/api/host/endelections", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        email: localStorage.getItem("email"),
+      })
+      .then((res) => {
+        if (res.data.status === "ok") {
+          window.alert("Election ended Successfully");
+          setIsDeployed((isDeployed) => isDeployed + 1);
+          setEndButtonClick(true);
+        } else {
+          setEndButtonClick(false);
+          window.alert(res.data.error);
+        }
+      });
+  };
+
+  const endElection = async () => {
+    const abi = contractData.abi;
+    const address = contractData.contractAddress;
+    const contract = new web3.eth.Contract(abi, address);
+
+    try {
+      window.alert(
+        "Ending Election voting! Please wait atleast 40 seconds for the transaction to be mined."
+      );
+
+      setEndButtonClick(true);
+
+      await contract.methods
+        .endVote()
+        .send({
+          from: contractData.walletAddress,
+        })
+        .then((result) => {
+          if (
+            result.events.electionState !== undefined ||
+            result.events.electionState !== null
+          ) {
+            updateEndStatus();
+          }
+        });
+    } catch (error) {
+      window.alert(error.message);
+      setEndButtonClick(false);
+    }
   };
 
   return (
@@ -590,6 +659,8 @@ export default function ElectionComponent() {
               variant="contained"
               color="primary"
               className={classes.ebutton}
+              disabled={endbuttonclick}
+              onClick={() => endElection()}
             >
               End
             </Button>

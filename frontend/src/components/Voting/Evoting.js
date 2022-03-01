@@ -1,9 +1,9 @@
-import { Button, makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ElectionState } from "../../ElectionContext";
-import { Buttonthird1, ButtonVote } from "../ButtonElement";
+import { ButtonVote } from "../ButtonElement";
 import web3 from "../../config/web3";
 import { checkWalletAvailable } from "../../config/web3Action";
 
@@ -119,6 +119,7 @@ const Evoting = () => {
     contractData,
     setVoterStatus,
     voterStatus,
+    host,
   } = ElectionState();
   const [candidates, setCandidates] = React.useState([]);
   const [cAddress, setCAddress] = React.useState("");
@@ -129,12 +130,13 @@ const Evoting = () => {
       getCandidates();
       checkAddress();
     }
+    // eslint-disable-next-line 
   }, [account]);
 
   useEffect(() => {
     if (refreshKey !== 0) {
       getVoterStatus();
-    }
+    }// eslint-disable-next-line 
   }, [refreshKey]);
 
   const getCandidates = async () => {
@@ -330,12 +332,7 @@ const Evoting = () => {
         <div className={classes.container} id="ctn_1">
           {candidates.map((candidate, index) => {
             return (
-              <div
-                className={classes.card}
-                style={{
-                  cursor: voterStatus === "Not Voted" ? "pointer" : "not-allowed",
-                }}
-              >
+              <div className={classes.card}>
                 <h1 style={{ color: "#FEE3EC" }}>#Candidate Info</h1>
 
                 <div
@@ -382,11 +379,14 @@ const Evoting = () => {
 
                 <div
                   style={{
-                    display: "flex",
                     flexDirection: "row",
                     marginTop: "10px",
                     justifyContent: "center",
                     alignItems: "center",
+                    display:
+                      host.data.electionStatus === "Started" ? "flex" : "none",
+                    cursor:
+                      voterStatus === "Not Voted" ? "pointer" : "not-allowed",
                   }}
                 >
                   <ButtonVote

@@ -15,8 +15,7 @@ export default function Profile() {
   const { setLogin, account, setAccount } = ElectionHostState();
 
   const handleClick = (event) => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
+   localStorage.clear();
     setLogin("");
   };
 

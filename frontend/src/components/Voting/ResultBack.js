@@ -1,15 +1,13 @@
-import styled from "styled-components";
 import React from "react";
-import { ElectionState } from "../../ElectionContext";
+import styled from "styled-components";
 import { Typography } from "@material-ui/core";
 
-export default function BackSide() {
-  const { host } = ElectionState();
+const ResultBack = () => {
   return (
     <Back>
-      <Debit>Pollice Election Service</Debit>
+      <Debit>Pollice Election</Debit>
       <Bank>#verified</Bank>
-      <Number>{"Contact:- +91 " + host.data.contactNumber}</Number>
+      <Number>{"Contact:- +91 " + 7015789655}</Number>
       <Valid>
         <Typography
           variant="h6"
@@ -27,14 +25,14 @@ export default function BackSide() {
             letterSpacing: "2px",
           }}
         >
-          &nbsp;&nbsp;{host.data.email}
+          &nbsp;&nbsp;yash@gmail.com
         </Typography>
       </Valid>
 
-      <CardHold>{"Type of Org:- " + host.data.typeOfOrg}</CardHold>
+      <CardHold>{"Type of Org:- "}</CardHold>
     </Back>
   );
-}
+};
 
 const Back = styled.div`
   /* ::before {
@@ -118,3 +116,5 @@ const CardHold = styled.h5`
   font-size: 16px;
   letter-spacing: 2px;
 `;
+
+export default ResultBack;

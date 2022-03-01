@@ -8,6 +8,7 @@ import TopCards from "../components/Voting/TopCards";
 import { ElectionState } from "../ElectionContext";
 import axios from "axios";
 import web3 from "../config/web3";
+import Result from "../components/Voting/Result";
 
 const Election = () => {
   const { _id } = useParams();
@@ -31,13 +32,14 @@ const Election = () => {
 
   useEffect(() => {
     setAccount(JSON.parse(localStorage.getItem("accountDetails")));
+    // eslint-disable-next-line 
   }, []);
 
   useEffect(() => {
     if (account.wallet) {
       getHostData();
       getContractData();
-    }
+    }// eslint-disable-next-line 
   }, [account]);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const Election = () => {
       getCardDetails();
       getProposal();
       getVoterStatus();
-    }
+    }// eslint-disable-next-line 
   }, [refreshKey]);
 
   useEffect(() => {
@@ -148,6 +150,7 @@ const Election = () => {
         <ElectionChrono />
         <HostDetails />
         <Evoting />
+        <Result />
       </div>
     </>
   );
