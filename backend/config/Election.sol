@@ -26,9 +26,7 @@ contract Election{
     string public ballotOfficialName;
     string public proposal;
 
-    mapping(address => Candidate) private candidateRegistry;
     mapping(address => Voter) private voterRegistry;
-    mapping(uint => address) public candidateIdToAddress;
 
     enum State { Created, Voting, Ended }
     State public state;
@@ -87,9 +85,7 @@ contract Election{
         c.myAddress=_candidateAddress;
         c.name=_name;
         c.voteCount=0;
-        candidateRegistry[_candidateAddress] = c;
-        candidateIdToAddress[candidatesCount] = _candidateAddress;
-
+        
          candidates.push(Candidate({
                 id:candidatesCount,
                 myAddress:_candidateAddress,
@@ -123,19 +119,15 @@ contract Election{
     }
 
 
-    function doVote(uint _candidateId,string memory _candidateName) 
+        function doVote(uint _candidateId,string memory _candidateName) 
         public
         inState(State.Voting)
     {
 
-        address candidateAddress;
-        candidateAddress= candidateIdToAddress[_candidateId];
-
-        require(candidateRegistry[candidateAddress].id !=0 ,"This candidate doesn't exist");
-        require(!voterRegistry[msg.sender].voted,"You have already voted for the participant");
+        require(voterRegistry[msg.sender].voted == false,"You already voted");
 
         if(bytes(voterRegistry[msg.sender].voterName).length != 0){
-            candidateRegistry[candidateAddress].voteCount++;
+            candidates[_candidateId-1].voteCount++;
             voterRegistry[msg.sender].voted = true;
             totalVotes++;
         }
@@ -153,17 +145,20 @@ contract Election{
     }
 
     function winnerIndex()
-        private view
+        public view
         inState(State.Ended)
         returns (uint winningProposal)
     {
         uint winningVoteCount = 0;
+        uint proposaltemp=0;
         for (uint i = 0; i < candidates.length; i++) {
             if (candidates[i].voteCount > winningVoteCount) {
                 winningVoteCount = candidates[i].voteCount;
-                winningProposal = i ;
+                proposaltemp = i ;
             }
         }
+
+        winningProposal=proposaltemp;
     }
 
     function winnerName()
@@ -199,5 +194,13 @@ contract Election{
         returns (bool status)
     {
         status = voterRegistry[msg.sender].voted;
+    }
+
+    function winnerVotes()
+        public
+        view
+        returns (uint _wVotes)
+    {
+        _wVotes = candidates[winnerIndex()].voteCount;
     }
 }

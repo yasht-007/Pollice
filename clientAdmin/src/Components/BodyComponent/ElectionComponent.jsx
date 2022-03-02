@@ -3,9 +3,7 @@ import {
   Box,
   Card,
   Grid,
-  CardHeader,
   CardContent,
-  Avatar,
   Button,
   CircularProgress,
   Container,
@@ -51,10 +49,12 @@ export default function ElectionComponent() {
   const [buttonclick, setButtonClick] = useState(false);
   const [startbuttonclick, setStartButtonClick] = useState(false);
   const [endbuttonclick, setEndButtonClick] = useState(false);
+  const [resultbuttonclick, setResultButtonClick] = useState(false);
   const [isDeployed, setIsDeployed] = useState(0);
   const [totalVoters, setTotalVoters] = useState(0);
   const [totalVotes, setTotalVotes] = useState(0);
-  const [refreshKey,setRefreshKey] = useState(0);
+  const [winnerName, setWinnerName] = useState("");
+  const [winnerAddress, setWinnerAddress] = useState("");
 
   useEffect(() => {
     if (account.wallet && electionStatus === "Not Active") {
@@ -74,23 +74,42 @@ export default function ElectionComponent() {
 
       if (electionStatus === "Deployed") {
         setButtonClick(true);
+        setStartButtonClick(false);
+        setEndButtonClick(true);
+        setResultButtonClick(true);
       } else if (electionStatus === "Started") {
         getTotalVotersAndVotes();
         setButtonClick(true);
         setStartButtonClick(true);
+        setEndButtonClick(false);
+        setResultButtonClick(true);
       } else if (electionStatus === "Ended") {
         getTotalVotersAndVotes();
         setButtonClick(true);
         setStartButtonClick(true);
         setEndButtonClick(true);
-      } else {
-        setButtonClick(false);
+        setResultButtonClick(false);
+      } else if (electionStatus === "Result") {
+        getTotalVotersAndVotes();
+        setButtonClick(true);
+        setStartButtonClick(true);
+        setEndButtonClick(true);
+        setResultButtonClick(true);
       }
-    } else {
-      setButtonClick(false);
-      setStartButtonClick(false);
     }
+    //  else {
+    //   setButtonClick(false);
+    //   setStartButtonClick(false);
+    //   setEndButtonClick(false);
+    //   setResultButtonClick(false);
+    // }
   }, [isDeployed, account, electionStatus]);
+
+  useEffect(() => {
+    if (account.wallet && electionStatus === "Result") {
+      getWinners();
+    }
+  }, [account, isDeployed, electionStatus]);
 
   const DisplayData = [
     {
@@ -401,6 +420,73 @@ export default function ElectionComponent() {
     }
   };
 
+  const updateResultStatus = async (result) => {
+    await axios
+      .post("http://localhost:5000/api/host/declareresult", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        email: localStorage.getItem("email"),
+        winnerWalletAddress: result,
+      })
+      .then((res) => {
+        if (res.data.status === "ok") {
+          window.alert("Election result declared Successfully");
+          setIsDeployed((isDeployed) => isDeployed + 1);
+          setResultButtonClick(true);
+        } else {
+          setResultButtonClick(false);
+          window.alert(res.data.error);
+        }
+      });
+  };
+
+  const declareResult = async () => {
+    const abi = contractData.abi;
+    const address = contractData.contractAddress;
+    const contract = new web3.eth.Contract(abi, address);
+
+    try {
+      window.alert("Getting Election result! Please wait.");
+
+      setResultButtonClick(true);
+
+      await contract.methods
+        .winnerAddress()
+        .call()
+        .then((result) => {
+          // setWinnerAddress(result);
+          updateResultStatus(result);
+        });
+    } catch (error) {
+      window.alert(error.message);
+      setResultButtonClick(false);
+    }
+  };
+
+  const getWinners = async () => {
+    try {
+      const resultWinner = await axios.post(
+        "http://localhost:5000/api/host/winner",
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+          email: localStorage.getItem("email"),
+        }
+      );
+
+      if (resultWinner.data.status === "ok") {
+        setWinnerName(resultWinner.data.winnerName);
+        setWinnerAddress(resultWinner.data.winnerAddress);
+      } else {
+        window.alert("Error in fetching winner list please contact admin");
+      }
+    } catch (error) {
+      window.alert(error.message);
+    }
+  };
+
   return (
     <>
       <Box>
@@ -439,194 +525,235 @@ export default function ElectionComponent() {
             <Typography variant="h5" style={{ padding: "10px", color: "blue" }}>
               Election Control :-
             </Typography>
+            {electionStatus !== "Result" ? (
+              <>
+                <Grid className={classes.ecard}>
+                  <Typography
+                    variant="h6"
+                    style={{ padding: "10px", color: "black" }}
+                  >
+                    Ballot Name :-
+                  </Typography>
 
-            <Grid className={classes.ecard}>
-              <Typography
-                variant="h6"
-                style={{ padding: "10px", color: "black" }}
-              >
-                Ballot Name :-
-              </Typography>
+                  <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    style={{ padding: "5px" }}
+                    size="small"
+                    disabled={buttonclick === false ? "" : "disabled"}
+                    onChange={(e) => setBallotName(e.target.value)}
+                  />
+                </Grid>
+                <Grid className={classes.ecard}>
+                  <Typography
+                    variant="h6"
+                    style={{ padding: "10px", color: "black" }}
+                  >
+                    Proposal :-
+                  </Typography>
 
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                style={{ padding: "5px" }}
-                size="small"
-                disabled={buttonclick === false ? "" : "disabled"}
-                onChange={(e) => setBallotName(e.target.value)}
-              />
-            </Grid>
+                  <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    style={{ padding: "5px", minWidth: "40vw" }}
+                    size="small"
+                    disabled={buttonclick === false ? "" : "disabled"}
+                    onChange={(e) => setProposal(e.target.value)}
+                  />
+                </Grid>
+                <Grid className={classes.ecard}>
+                  <Typography
+                    variant="h6"
+                    style={{ padding: "10px", color: "black" }}
+                  >
+                    Candidate Names :-
+                  </Typography>
 
-            <Grid className={classes.ecard}>
-              <Typography
-                variant="h6"
-                style={{ padding: "10px", color: "black" }}
-              >
-                Proposal :-
-              </Typography>
+                  <Popup
+                    trigger={
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        disabled={buttonclick}
+                        style={{
+                          height: "4ch",
+                          marginTop: "10px",
+                          textTransform: "none",
+                        }}
+                      >
+                        See List
+                      </Button>
+                    }
+                    onOpen={() => getRequests()}
+                    modal
+                    contentStyle={contentStyle}
+                  >
+                    {(close) => (
+                      <Container
+                        className={classes.container}
+                        style={{ alignItems: "center" }}
+                      >
+                        <Typography
+                          variant="h6"
+                          style={{
+                            padding: "10px",
+                            color: "black",
+                          }}
+                        >
+                          Candidate List :-
+                        </Typography>
 
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                style={{ padding: "5px", minWidth: "40vw" }}
-                size="small"
-                disabled={buttonclick === false ? "" : "disabled"}
-                onChange={(e) => setProposal(e.target.value)}
-              />
-            </Grid>
+                        {posts.data.map((item, i) => {
+                          return (
+                            <>
+                              <List
+                                sx={{
+                                  width: "100%",
+                                  maxWidth: 360,
+                                  bgcolor: "background.paper",
+                                }}
+                                component="nav"
+                                aria-labelledby="nested-list-subheader"
+                              >
+                                <ListItemIcon>
+                                  <InboxIcon />
+                                  <ListItemText primary={item.name} />
+                                </ListItemIcon>
+                              </List>
+                            </>
+                          );
+                        })}
 
-            <Grid className={classes.ecard}>
-              <Typography
-                variant="h6"
-                style={{ padding: "10px", color: "black" }}
-              >
-                Candidate Names :-
-              </Typography>
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => {
+                            close();
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                      </Container>
+                    )}
+                  </Popup>
+                </Grid>
+                <Grid className={classes.ecard}>
+                  <Typography
+                    variant="h6"
+                    style={{ padding: "10px", color: "black" }}
+                  >
+                    Candidate Addresses :-
+                  </Typography>
+                  <Popup
+                    trigger={
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        disabled={buttonclick}
+                        style={{
+                          height: "4ch",
+                          marginTop: "10px",
+                          textTransform: "none",
+                        }}
+                      >
+                        See List
+                      </Button>
+                    }
+                    modal
+                    contentStyle={contentStyle}
+                    onOpen={() => getRequests()}
+                  >
+                    {(close) => (
+                      <Container
+                        className={classes.container}
+                        style={{ alignItems: "center" }}
+                      >
+                        <Typography
+                          variant="h6"
+                          style={{
+                            padding: "10px",
+                            color: "black",
+                          }}
+                        >
+                          Candidate Addresses :-
+                        </Typography>
 
-              <Popup
-                trigger={
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    disabled={buttonclick}
+                        {posts.data.map((item, i) => {
+                          return (
+                            <>
+                              <List
+                                sx={{
+                                  width: "100%",
+                                  maxWidth: 360,
+                                  bgcolor: "background.paper",
+                                }}
+                                component="nav"
+                                aria-labelledby="nested-list-subheader"
+                              >
+                                <ListItemIcon>
+                                  <AccounntBalanceIcon />
+                                  <ListItemText primary={item.walletAddress} />
+                                </ListItemIcon>
+                              </List>
+                            </>
+                          );
+                        })}
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => {
+                            close();
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                      </Container>
+                    )}
+                  </Popup>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid className={classes.ecard}>
+                  <Typography
+                    variant="h6"
+                    style={{ padding: "10px", color: "black" }}
+                  >
+                    Winner Name :-
+                  </Typography>
+
+                  <Typography
+                    variant="h6"
+                    style={{ padding: "5px", marginTop: "6px" }}
+                  >
+                    {winnerName}
+                  </Typography>
+                </Grid>
+
+                <Grid className={classes.ecard}>
+                  <Typography
+                    variant="h6"
+                    style={{ padding: "10px", color: "black" }}
+                  >
+                    Winner Address :-
+                  </Typography>
+
+                  <Typography
+                    variant="h6"
                     style={{
-                      height: "4ch",
-                      marginTop: "10px",
-                      textTransform: "none",
+                      padding: "5px",
+                      marginTop: "6px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "30ch",
                     }}
                   >
-                    See List
-                  </Button>
-                }
-                onOpen={() => getRequests()}
-                modal
-                contentStyle={contentStyle}
-              >
-                {(close) => (
-                  <Container
-                    className={classes.container}
-                    style={{ alignItems: "center" }}
-                  >
-                    <Typography
-                      variant="h6"
-                      style={{
-                        padding: "10px",
-                        color: "black",
-                      }}
-                    >
-                      Candidate List :-
-                    </Typography>
-
-                    {posts.data.map((item, i) => {
-                      return (
-                        <>
-                          <List
-                            sx={{
-                              width: "100%",
-                              maxWidth: 360,
-                              bgcolor: "background.paper",
-                            }}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                          >
-                            <ListItemIcon>
-                              <InboxIcon />
-                              <ListItemText primary={item.name} />
-                            </ListItemIcon>
-                          </List>
-                        </>
-                      );
-                    })}
-
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={() => {
-                        close();
-                      }}
-                    >
-                      Confirm
-                    </Button>
-                  </Container>
-                )}
-              </Popup>
-            </Grid>
-
-            <Grid className={classes.ecard}>
-              <Typography
-                variant="h6"
-                style={{ padding: "10px", color: "black" }}
-              >
-                Candidate Addresses :-
-              </Typography>
-              <Popup
-                trigger={
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    disabled={buttonclick}
-                    style={{
-                      height: "4ch",
-                      marginTop: "10px",
-                      textTransform: "none",
-                    }}
-                  >
-                    See List
-                  </Button>
-                }
-                modal
-                contentStyle={contentStyle}
-                onOpen={() => getRequests()}
-              >
-                {(close) => (
-                  <Container
-                    className={classes.container}
-                    style={{ alignItems: "center" }}
-                  >
-                    <Typography
-                      variant="h6"
-                      style={{
-                        padding: "10px",
-                        color: "black",
-                      }}
-                    >
-                      Candidate Addresses :-
-                    </Typography>
-
-                    {posts.data.map((item, i) => {
-                      return (
-                        <>
-                          <List
-                            sx={{
-                              width: "100%",
-                              maxWidth: 360,
-                              bgcolor: "background.paper",
-                            }}
-                            component="nav"
-                            aria-labelledby="nested-list-subheader"
-                          >
-                            <ListItemIcon>
-                              <AccounntBalanceIcon />
-                              <ListItemText primary={item.walletAddress} />
-                            </ListItemIcon>
-                          </List>
-                        </>
-                      );
-                    })}
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={() => {
-                        close();
-                      }}
-                    >
-                      Confirm
-                    </Button>
-                  </Container>
-                )}
-              </Popup>
-            </Grid>
+                    {winnerAddress}
+                  </Typography>
+                </Grid>
+              </>
+            )}
           </Container>
           <Container
             style={{
@@ -668,6 +795,8 @@ export default function ElectionComponent() {
               variant="contained"
               color="primary"
               className={classes.ebutton}
+              disabled={resultbuttonclick}
+              onClick={() => declareResult()}
             >
               Result
             </Button>

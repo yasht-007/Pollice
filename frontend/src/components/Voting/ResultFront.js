@@ -1,11 +1,16 @@
 import styled from "styled-components";
 import voteImg from "./vote.png";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Typography } from "@material-ui/core";
+import { ElectionState } from "../../ElectionContext";
+import web3 from "../../config/web3";
 
 const ResultFront = () => {
-    const {_id} = useParams();
+  const { _id } = useParams();
+  const { winnerId,winnerName } = ElectionState();
+  
+
   return (
     <Front>
       <Debit>Pollice Election</Debit>
@@ -13,10 +18,18 @@ const ResultFront = () => {
       <Chip src={voteImg}></Chip>
       <Number>{_id}</Number>
       <Valid>
-        <Typography>Winner Id:-</Typography>
-        <Typography>&nbsp;&nbsp;1</Typography>
+        <Typography
+          variant="h6"
+          style={{
+            fontFamily: "Orbitron, sans-serif",
+            letterSpacing: "2px",
+          }}
+        >
+          Winner Id:-
+        </Typography>
+        <Typography variant="h6">&nbsp;&nbsp;{winnerId}</Typography>
       </Valid>
-      <CardHold>yash1232</CardHold>
+      <CardHold>{winnerName}</CardHold>
     </Front>
   );
 };
@@ -67,19 +80,23 @@ const Number = styled.h3`
   letter-spacing: 6px;
   color: #fff;
   font-size: 18px;
-  text-shadow: 0 2px 1px #0005;
   font-family: "Orbitron", sans-serif;
+  width: auto;
+  font-weight: 100;
+  max-width: 39ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Valid = styled.h5`
   position: absolute;
-  bottom: 80px;
+  bottom: 70px;
   left: 40px;
   display: flex;
   justify-content: baseline;
   align-items: center;
   color: #fff;
-  font-weight: 300;
   line-height: 1em;
   text-align: right;
 
@@ -93,11 +110,12 @@ const Valid = styled.h5`
 
 const CardHold = styled.h5`
   position: absolute;
-  bottom: 40px;
+  bottom: 30px;
   left: 40px;
   color: #fff;
-  font-weight: 300;
+  font-weight: 800;
   font-size: 16px;
+  text-shadow: 0 2px 1px #0005;
   letter-spacing: 2px;
 `;
 

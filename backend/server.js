@@ -349,10 +349,10 @@ app.get("/api/elections", async (req, res) => {
     const elections = await ElectionHost.find(
       {
         $or: [
-          { electionStatus: "Active" },
           { electionStatus: "Deployed" },
           { electionStatus: "Started" },
           { electionStatus: "Ended" },
+          { electionStatus: "Result" },
         ],
       },
       {
@@ -453,11 +453,16 @@ app.post("/api/host/getvoters", jwtVerify, async (req, res) => {
         voters: 1,
       }
     );
-
     if (!voters || voters === null) {
       return res.json({ status: "error", error: "Invalid Voters" });
     } else {
-      return res.json({ status: "ok", voters: voters });
+      var vList = [];
+      for (let i = 0; i < voters.voters.length; i++) {
+        if (voters.voters[i].approvalStatus === "Pending") {
+          vList.push(voters.voters[i]);
+        }
+      }
+      return res.json({ status: "ok", voters: vList });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });
@@ -804,6 +809,69 @@ app.post("/api/host/endelections", jwtVerify, async (req, res) => {
         status: "error",
         error: "Error in starting election! Please contact support",
       });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/declareresult", jwtVerify, async (req, res) => {
+  try {
+    const getResult = await ElectionHost.updateOne(
+      {
+        email: req.body.email,
+      },
+      {
+        $set: {
+          electionStatus: "Result",
+          winnerWalletAddress: req.body.winnerWalletAddress,
+        },
+      }
+    );
+
+    if (getResult.modifiedCount >= 1) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({
+        status: "error",
+        error: "Error in declaring election result! Please contact support",
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.post("/api/host/winner", jwtVerify, async (req, res) => {
+  try {
+    const getWinnerAddress = await ElectionHost.findOne(
+      {
+        email: req.body.email,
+      },
+      {
+        winnerWalletAddress: 1,
+      }
+    );
+    if (getWinnerAddress !== null || getWinnerAddress !== undefined) {
+      const getWinner = await ElectionHost.findOne(
+        {
+          email: req.body.email,
+          "candidates.walletAddress": getWinnerAddress.winnerWalletAddress,
+        },
+        {
+          "candidates.$": 1,
+        }
+      );
+
+      if (getWinner !== null || getWinner !== undefined) {
+        return res.json({
+          status: "ok",
+          winnerName: getWinner.candidates[0].name,
+          winnerAddress: getWinner.candidates[0].walletAddress,
+        });
+      }
+    } else {
+      return res.json({ status: "error" });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });

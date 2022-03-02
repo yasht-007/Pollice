@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { ElectionState } from "../../../ElectionContext";
 
 const Navbar = ({ toggle }) => {
-  const {account} = ElectionState();
+  const { account,host } = ElectionState();
   const [scrollNav, setScrollNav] = useState(false);
   const navigate = useNavigate();
 
@@ -94,6 +94,22 @@ const Navbar = ({ toggle }) => {
                   Vote
                 </NavLinks>
               </NavItem>
+
+              {host.data.electionStatus === "Result" ? (
+                <NavItem>
+                  <NavLinks
+                    to="result"
+                    smooth={true}
+                    duration={600}
+                    spy={true}
+                    exact="true"
+                    offset={-80}
+                  >
+                    Result
+                  </NavLinks>
+                </NavItem>
+              ) : null}
+
               <DataAddress address={account.address} />
             </NavMenu>
           </NavbarContainer>

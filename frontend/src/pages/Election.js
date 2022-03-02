@@ -15,6 +15,7 @@ const Election = () => {
   const {
     account,
     setAccount,
+    host,
     setHost,
     setContractData,
     contractData,
@@ -22,6 +23,10 @@ const Election = () => {
     setTotalVoter,
     setTotalVotes,
     setVoterStatus,
+    setWinnerId,
+    setWinnerName,
+    setWinnerAddress,
+    setWinnerVotes,
   } = ElectionState();
   const [isOpen, setIsOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -32,14 +37,14 @@ const Election = () => {
 
   useEffect(() => {
     setAccount(JSON.parse(localStorage.getItem("accountDetails")));
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     if (account.wallet) {
       getHostData();
       getContractData();
-    }// eslint-disable-next-line 
+    } // eslint-disable-next-line
   }, [account]);
 
   useEffect(() => {
@@ -47,8 +52,14 @@ const Election = () => {
       getCardDetails();
       getProposal();
       getVoterStatus();
-    }// eslint-disable-next-line 
+    } // eslint-disable-next-line
   }, [refreshKey]);
+
+  useEffect(() => {
+    if (account.wallet && host.data.electionStatus === "Result" && refreshKey !== 0) {
+      getAllCardDetails();
+    }
+  }, [account, host,refreshKey]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,6 +88,7 @@ const Election = () => {
       if (cData.data.status === "ok") {
         setContractData(cData.data.contractData);
         setRefreshKey((refreshKey) => refreshKey + 1);
+
       } else {
         window.alert("Error in fetching contract data");
       }
@@ -136,6 +148,45 @@ const Election = () => {
       });
   };
 
+  const getAllCardDetails = async () => {
+    const abi = contractData.abi;
+    const address = contractData.contractAddress;
+    const contract = new web3.eth.Contract(abi, address);
+
+    try {
+      contract.methods
+        .winnerId()
+        .call()
+        .then(function (result) {
+          setWinnerId(result);
+        });
+
+      contract.methods
+        .winnerName()
+        .call()
+        .then(function (result) {
+          setWinnerName(result);
+        });
+
+        contract.methods
+        .winnerAddress()
+        .call()
+        .then(function (result) {
+          setWinnerAddress(result);
+        });
+
+        contract.methods
+        .winnerVotes()
+        .call()
+        .then(function (result) {
+          setWinnerVotes(result);
+        });
+
+    } catch (error) {
+      window.alert(error.message);
+    }
+  };
+
   return (
     <>
       <div
@@ -150,7 +201,7 @@ const Election = () => {
         <ElectionChrono />
         <HostDetails />
         <Evoting />
-        <Result />
+        {host.data.electionStatus === "Result" ? <Result /> : null}
       </div>
     </>
   );

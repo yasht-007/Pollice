@@ -310,19 +310,20 @@ const Evoting = () => {
               variant="h5"
               style={{
                 color: "#fff",
-                fontFamily: "Montserrat",
-                fontWeight: "600",
+                fontFamily: "Orbitron, sans-serif",
+                fontWeight: "500",
               }}
             >
               Voting Proposal:
             </Typography>
-            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; 
             <Typography
               variant="h5"
               style={{
                 color: "#fff",
-                fontFamily: "Montserrat",
+                fontFamily: "Orbitron, sans-serif",
                 fontWeight: "400",
+                  letterSpacing: "0.5px",
               }}
             >
               {proposal}
@@ -333,7 +334,7 @@ const Evoting = () => {
           {candidates.map((candidate, index) => {
             return (
               <div className={classes.card}>
-                <h1 style={{ color: "#FEE3EC" }}>#Candidate Info</h1>
+                <h1 style={{ color: "#FEE3EC" ,fontWeight:"100",}}>#Candidate Info</h1>
 
                 <div
                   style={{
@@ -342,7 +343,10 @@ const Evoting = () => {
                     marginTop: "20px",
                   }}
                 >
-                  <Typography variant="h5">Identification No:&nbsp;</Typography>
+                  <Typography variant="h5" style={{
+                    letterSpacing: "1px",
+                    fontFamily:"Orbitron, sans-serif",
+                  }}>Identification No:&nbsp;</Typography>
                   <Typography variant="h5">{candidate.cId}</Typography>
                 </div>
 
@@ -353,7 +357,9 @@ const Evoting = () => {
                     marginTop: "10px",
                   }}
                 >
-                  <Typography variant="h5">Name:&nbsp; </Typography>
+                  <Typography variant="h5" style={{
+                    letterSpacing: "1px",
+                  }}>Name:&nbsp; </Typography>
                   <Typography variant="h5">{candidate.name}</Typography>
                 </div>
 
@@ -364,7 +370,9 @@ const Evoting = () => {
                     marginTop: "10px",
                   }}
                 >
-                  <Typography variant="h5">Address:&nbsp; </Typography>
+                  <Typography variant="h5" style={{
+                    letterSpacing: "1px",
+                  }}>Address:&nbsp; </Typography>
                   <Typography
                     variant="h5"
                     style={{

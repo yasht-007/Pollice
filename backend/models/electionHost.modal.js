@@ -16,6 +16,7 @@ const ElectionHost = new mongoose.Schema(
     accessKey: { type: String, required: false, unique: true },
     electionStatus: { type: String, required: false },
     eDeployDate: { type: String, required: false, default: "2022-02-30" },
+    winnerWalletAddress: { type: String, required: false,default:"" },
     candidates: [
       {
         type: Object,
@@ -36,7 +37,7 @@ const ElectionHost = new mongoose.Schema(
         name: { type: String, required: false },
         walletAddress: { type: String, required: false },
         appovalStatus: { type: String, required: false },
-        voted:{type:Boolean,required:false,default:false},
+        voted: { type: Boolean, required: false, default: false },
       },
     ],
   },

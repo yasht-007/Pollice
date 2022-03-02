@@ -43,7 +43,11 @@ const ElectionContext = ({ children }) => {
   const [proposal, setProposal] = React.useState("");
   const [totalvoter, setTotalVoter] = React.useState("NA");
   const [totalvotes, setTotalVotes] = React.useState("NA");
-  const [voterStatus,setVoterStatus] = React.useState("Not Voted");
+  const [voterStatus, setVoterStatus] = React.useState("Not Voted");
+  const [winnerId, setWinnerId] = useState(0);
+  const [winnerName, setWinnerName] = useState("");
+  const [winnerAddress, setWinnerAddress] = useState("");
+  const [winnerVotes, setWinnerVotes] = useState(0);
 
   const fetchElections = async () => {
     setLoading(true);
@@ -52,6 +56,7 @@ const ElectionContext = ({ children }) => {
       .then((res) => {
         setElections(res.data.elections);
         setLoading(false);
+        console.log(res.data.elections);
       })
       .catch((err) => {
         setLoading(false);
@@ -70,7 +75,11 @@ const ElectionContext = ({ children }) => {
         walletAddress: account.address,
       })
       .then((res) => {
-        setUser(res.data.voter);
+        if (res.data.status === "ok") {
+          setUser(res.data.voter);
+        }else{
+          setUser(null);
+        }
       })
       .catch((err) => {
         setAlert({
@@ -109,6 +118,14 @@ const ElectionContext = ({ children }) => {
           setTotalVotes,
           voterStatus,
           setVoterStatus,
+          winnerId,
+          setWinnerId,
+          winnerName,
+          setWinnerName,
+          winnerAddress,
+          setWinnerAddress,
+          winnerVotes,
+          setWinnerVotes,
         }}
       >
         {children}

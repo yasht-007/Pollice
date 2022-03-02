@@ -62,13 +62,13 @@ const CampaignTable = () => {
   useEffect(() => {
     if (account.wallet) {
       fetchUser();
-    }// eslint-disable-next-line 
+    } // eslint-disable-next-line
   }, [account]);
 
   useEffect(() => {
     if (user && account.wallet) {
       fetchVoterStatus();
-    }// eslint-disable-next-line 
+    } // eslint-disable-next-line
   }, [user, account]);
 
   const darkTheme = createTheme({
@@ -109,7 +109,7 @@ const CampaignTable = () => {
   };
 
   const registerVoter = async (row) => {
-    if (!account.wallet) {
+    if (!account.wallet || !user) {
       setAlert({
         open: true,
         message:
@@ -140,7 +140,7 @@ const CampaignTable = () => {
               setAlert({
                 open: true,
                 message:
-                  "You have successfully registered for this election! Please reconnect or your wallet or reload page to see the status of your registration",
+                  "You have successfully registered for this election! Please reconnect your wallet or reload page to see the status of your registration",
                 type: "success",
                 time: 8000,
               });
@@ -175,9 +175,13 @@ const CampaignTable = () => {
   };
 
   const findRegisteration = (eId) => {
-    if (registered && user.registerations.length > 0) {
-      if (user.registerations.find((e) => e.eId === eId)) {
-        return true;
+    if (account.wallet && user) {
+      if (registered && user.registerations.length > 0) {
+        if (user.registerations.find((e) => e.eId === eId)) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
@@ -187,27 +191,15 @@ const CampaignTable = () => {
   };
 
   const voterRegStatus = (elI) => {
-    for (let i = 0; i < user.registerations.length; i++) {
-      if (user.registerations[i].eId === elI) {
-        return user.registerations[i].approvalStatus;
+    if (user) {
+      for (let i = 0; i < user.registerations.length; i++) {
+        if (user.registerations[i].eId === elI) {
+          return user.registerations[i].approvalStatus;
+        }
       }
+    } else {
+      return "Not Registered";
     }
-
-    // if (registered && user.registerations.length > 0) {
-    //   if (user.registerations.find((elI) => elI.approvalStatus === "Requested")) {
-    //     return "Requested";
-    //   } else if (
-    //     user.registerations.find((elI) => elI.approvalStatus === "Permitted")
-    //   ) {
-    //     return "Permitted";
-    //   } else if (
-    //     user.registerations.find((elI) => elI.approvalStatus === "Rejected")
-    //   ) {
-    //     return "Rejected";
-    //   } else {
-    //     return "Not Registered";
-    //   }
-    // }
   };
 
   return (
@@ -271,7 +263,7 @@ const CampaignTable = () => {
                               cursor: "pointer",
                             }}
                             onClick={() =>
-                              account.wallet
+                              account.wallet && user
                                 ? row.electionStatus !== "Not Active" &&
                                   voterRegStatus(row._id) === "Permitted"
                                   ? handleTableClick(row.status, row._id)

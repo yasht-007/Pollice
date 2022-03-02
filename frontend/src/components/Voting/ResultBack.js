@@ -1,13 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 import { Typography } from "@material-ui/core";
+import { ElectionState } from "../../ElectionContext";
 
 const ResultBack = () => {
+  const { winnerAddress, winnerVotes, totalvotes } = ElectionState();
+
   return (
     <Back>
       <Debit>Pollice Election</Debit>
-      <Bank>#verified</Bank>
-      <Number>{"Contact:- +91 " + 7015789655}</Number>
+      <Bank>#result</Bank>
+      <Number>{"Winner Address:- " + winnerAddress}</Number>
+
       <Valid>
         <Typography
           variant="h6"
@@ -16,7 +20,7 @@ const ResultBack = () => {
             fontFamily: `Orbitron, sans-serif`,
           }}
         >
-          Email:-
+          Winner Votes:-
         </Typography>
         <Typography
           variant="h6"
@@ -25,11 +29,15 @@ const ResultBack = () => {
             letterSpacing: "2px",
           }}
         >
-          &nbsp;&nbsp;yash@gmail.com
+          &nbsp;&nbsp;{winnerVotes}
         </Typography>
       </Valid>
 
-      <CardHold>{"Type of Org:- "}</CardHold>
+      <CardHold>
+        {"Winner Voting Percentage:- " +
+          Math.round((winnerVotes / totalvotes) * 100) +
+          "%"}
+      </CardHold>
     </Back>
   );
 };
@@ -85,6 +93,11 @@ const Number = styled.h3`
   font-size: 18px;
   text-shadow: 0 2px 1px #0005;
   font-family: "Orbitron", sans-serif;
+  width: auto;
+  max-width: 45ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Valid = styled.h5`

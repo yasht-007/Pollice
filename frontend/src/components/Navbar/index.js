@@ -62,12 +62,6 @@ const Navbar = ({ toggle }) => {
   };
 
   const connectWallet = async () => {
-    setAlert({
-      open: true,
-      type: "warning",
-      message: "Please ensure that your metamask wallet is unlocked !",
-      time: 4000,
-    });
     let wallet = await checkWalletAvailable();
     let address = await getUserAddress();
     let balance = await getMainBalance();

@@ -43,7 +43,7 @@ const Result = () => {
 
   return (
     <>
-      <div className={classes.space}>
+      <div className={classes.space} id="result">
         <div className={classes.container}>
           <Typography variant="h5" className={classes.pageTitle}>
             &nbsp;Election Result&nbsp;

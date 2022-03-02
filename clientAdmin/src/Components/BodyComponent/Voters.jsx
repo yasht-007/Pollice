@@ -96,7 +96,7 @@ export default function Voters() {
       .then((res) => {
         if (res.data.status === "ok") {
           const hosts = res.data.voters;
-          setPosts({ data: hosts.voters });
+          setPosts({ data: hosts });
         } else {
           setPosts({ data: [] });
         }
