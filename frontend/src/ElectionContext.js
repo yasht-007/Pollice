@@ -19,6 +19,7 @@ const ElectionContext = ({ children }) => {
     time: 2000,
   });
 
+  const [allowed, setAllowed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [elections, setElections] = useState([]);
   const [gotElection, setGotElection] = useState(false);
@@ -133,6 +134,8 @@ const ElectionContext = ({ children }) => {
           winnerVotes,
           setWinnerVotes,
           gotElection,
+          allowed,
+          setAllowed,
         }}
       >
         {children}

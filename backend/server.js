@@ -418,29 +418,29 @@ app.post("/api/elections/registervoter", async (req, res) => {
   }
 });
 
-app.post("/api/elections/voterregisterstatus", async (req, res) => {
-  try {
-    const walletInOrNot = await ElectionHost.findOne({
-      _id: req.body.electionId,
-      voters: {
-        $elemMatch: {
-          name: "Rudra Pathak",
-          walletAddress: req.body.walletAddress,
-        },
-      },
-    });
+// app.post("/api/elections/voterregisterstatus", async (req, res) => {
+//   try {
+//     const walletInOrNot = await ElectionHost.findOne({
+//       _id: req.body.electionId,
+//       voters: {
+//         $elemMatch: {
+//           name: "Rudra Pathak",
+//           walletAddress: req.body.walletAddress,
+//         },
+//       },
+//     });
 
-    // console.log(walletInOrNot);
+//     // console.log(walletInOrNot);
 
-    if (!walletInOrNot || walletInOrNot === null) {
-      return res.json({ status: "ok" });
-    } else {
-      return res.json({ status: "error" });
-    }
-  } catch (error) {
-    return res.json({ status: "error", error: error.message });
-  }
-});
+//     if (!walletInOrNot || walletInOrNot === null) {
+//       return res.json({ status: "ok" });
+//     } else {
+//       return res.json({ status: "error" });
+//     }
+//   } catch (error) {
+//     return res.json({ status: "error", error: error.message });
+//   }
+// });
 
 app.post("/api/host/getvoters", jwtVerify, async (req, res) => {
   try {
@@ -877,6 +877,16 @@ app.post("/api/host/winner", jwtVerify, async (req, res) => {
     return res.json({ status: "error", error: error.message });
   }
 });
+
+app.post("/api/alllowedornot",async (req,res)=>{
+  try {
+    const getAllowed = await ElectionHost.findOne({
+      
+    });
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+})
 
 const PORT = process.env.PORT || 5000;
 

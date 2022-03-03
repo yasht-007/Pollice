@@ -51,6 +51,7 @@ const CampaignTable = () => {
     registered,
     setRegistered,
     gotElection,
+    setAllowed,
   } = ElectionState();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -90,6 +91,7 @@ const CampaignTable = () => {
   const handleTableClick = (estatus, eid) => {
     if (user.registerations.find((eid) => eid.approvalStatus === "Permitted")) {
       localStorage.setItem("accountDetails", JSON.stringify(account));
+      setAllowed(true);
       history(`/election/${eid}`);
     } else if (estatus === "Deployed") {
       setAlert({
