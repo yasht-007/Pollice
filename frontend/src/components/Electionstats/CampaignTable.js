@@ -50,6 +50,7 @@ const CampaignTable = () => {
     fetchUser,
     registered,
     setRegistered,
+    gotElection,
   } = ElectionState();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -248,110 +249,128 @@ const CampaignTable = () => {
                   </TableRow>
                 </TableHead>
 
-                <TableBody>
-                  {handleSearch()
-                    .slice((page - 1) * 10, (page - 1) * 10 + 10)
-                    .map((row) => {
-                      const eDate = row.eStartDate + " - " + row.eEndDate;
+                {gotElection ? (
+                  <TableBody>
+                    {handleSearch()
+                      .slice((page - 1) * 10, (page - 1) * 10 + 10)
+                      .map((row) => {
+                        const eDate = row.eStartDate + " - " + row.eEndDate;
 
-                      return (
-                        <>
-                          <TableRow
-                            className={classes.row}
-                            key={row.organizationName}
-                            style={{
-                              cursor: "pointer",
-                            }}
-                            onClick={() =>
-                              account.wallet && user
-                                ? row.electionStatus !== "Not Active" &&
-                                  voterRegStatus(row._id) === "Permitted"
-                                  ? handleTableClick(row.status, row._id)
+                        return (
+                          <>
+                            <TableRow
+                              className={classes.row}
+                              key={row.organizationName}
+                              style={{
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                account.wallet && user
+                                  ? row.electionStatus !== "Not Active" &&
+                                    voterRegStatus(row._id) === "Permitted"
+                                    ? handleTableClick(row.status, row._id)
+                                    : setAlert({
+                                        open: true,
+                                        message:
+                                          "Election is not yet started! Voter Registeration phase is going on! Please wait...",
+                                        type: "error",
+                                        time: 6000,
+                                      })
                                   : setAlert({
                                       open: true,
                                       message:
-                                        "Election is not yet started! Voter Registeration phase is going on! Please wait...",
+                                        "Please first connect wallet or Register your account by clicking Register to vote button shown above",
                                       type: "error",
                                       time: 6000,
                                     })
-                                : setAlert({
-                                    open: true,
-                                    message:
-                                      "Please first connect wallet or Register your account by clicking Register to vote button shown above",
-                                    type: "error",
-                                    time: 6000,
-                                  })
-                            }
-                          >
-                            <TableCell component="th" scope="row">
-                              <span
-                                style={{
-                                  fontSize: 17,
-                                }}
-                              >
-                                {row.organizationName}
-                              </span>
-                            </TableCell>
-                            <TableCell align="center">
-                              <span
-                                style={{
-                                  fontSize: 17,
-                                  textTransform: "capitalize",
-                                }}
-                              >
-                                {row.typeOfOrg}
-                              </span>
-                            </TableCell>
+                              }
+                            >
+                              <TableCell component="th" scope="row">
+                                <span
+                                  style={{
+                                    fontSize: 17,
+                                  }}
+                                >
+                                  {row.organizationName}
+                                </span>
+                              </TableCell>
+                              <TableCell align="center">
+                                <span
+                                  style={{
+                                    fontSize: 17,
+                                    textTransform: "capitalize",
+                                  }}
+                                >
+                                  {row.typeOfOrg}
+                                </span>
+                              </TableCell>
 
-                            <TableCell align="center">
-                              <span
-                                style={{
-                                  fontSize: 17,
-                                }}
-                              >
-                                {eDate}
-                              </span>
-                            </TableCell>
-                            <TableCell align="center">
-                              <span
-                                style={{
-                                  fontSize: 17,
-                                }}
-                              >
-                                {row.electionStatus}
-                              </span>
-                            </TableCell>
-                            <TableCell align="center">
-                              {account.wallet && findRegisteration(row._id) ? (
+                              <TableCell align="center">
                                 <span
                                   style={{
                                     fontSize: 17,
                                   }}
                                 >
-                                  {voterRegStatus(row._id)}
+                                  {eDate}
                                 </span>
-                              ) : row.electionStatus === "Deployed" ? (
-                                <TableButton
-                                  type="submit"
-                                  onClick={() => registerVoter(row)}
-                                >
-                                  Register
-                                </TableButton>
-                              ) : (
+                              </TableCell>
+                              <TableCell align="center">
                                 <span
                                   style={{
                                     fontSize: 17,
                                   }}
                                 >
-                                  Not Registered
+                                  {row.electionStatus}
                                 </span>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        </>
-                      );
-                    })}
-                </TableBody>
+                              </TableCell>
+                              <TableCell align="center">
+                                {account.wallet &&
+                                findRegisteration(row._id) ? (
+                                  <span
+                                    style={{
+                                      fontSize: 17,
+                                    }}
+                                  >
+                                    {voterRegStatus(row._id)}
+                                  </span>
+                                ) : row.electionStatus === "Deployed" ? (
+                                  <TableButton
+                                    type="submit"
+                                    onClick={() => registerVoter(row)}
+                                  >
+                                    Register
+                                  </TableButton>
+                                ) : (
+                                  <span
+                                    style={{
+                                      fontSize: 17,
+                                    }}
+                                  >
+                                    Not Registered
+                                  </span>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          </>
+                        );
+                      })}
+                  </TableBody>
+                ) : (
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>
+                        <Typography
+                          variant="h5"
+                          style={{
+                            fontFamily: "Montserrat",
+                          }}
+                        >
+                          No ongoing campaigns right now. Please stay tuned...
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                )}
               </Table>
             )}
           </TableContainer>

@@ -21,6 +21,7 @@ const ElectionContext = ({ children }) => {
 
   const [loading, setLoading] = useState(false);
   const [elections, setElections] = useState([]);
+  const [gotElection, setGotElection] = useState(false);
   const [user, setUser] = useState(null);
   const [registered, setRegistered] = useState(false);
   const [host, setHost] = useState({
@@ -54,9 +55,14 @@ const ElectionContext = ({ children }) => {
     await axios
       .get("http://localhost:5000/api/elections")
       .then((res) => {
-        setElections(res.data.elections);
-        setLoading(false);
-        console.log(res.data.elections);
+        if (res.data.status === "ok") {
+          setElections(res.data.elections);
+          setGotElection(true);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setGotElection(false);
+        }
       })
       .catch((err) => {
         setLoading(false);
@@ -77,7 +83,7 @@ const ElectionContext = ({ children }) => {
       .then((res) => {
         if (res.data.status === "ok") {
           setUser(res.data.voter);
-        }else{
+        } else {
           setUser(null);
         }
       })
@@ -126,6 +132,7 @@ const ElectionContext = ({ children }) => {
           setWinnerAddress,
           winnerVotes,
           setWinnerVotes,
+          gotElection,
         }}
       >
         {children}
