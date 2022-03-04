@@ -1,57 +1,25 @@
-import React, { useState } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from "@material-ui/core";
-import SettingsIcon from "@material-ui/icons/Settings";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { useStyles } from "../HeaderStyles";
+import React from "react";
+import { Box, Button } from "@material-ui/core";
+import { AdminState } from "../../../AdminContext";
 
 export default function Profile() {
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const { setLogin } = AdminState();
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setLogin("");
+    localStorage.clear();
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const dropDownData = [
-   
-    { label: "Logout", icon: <ExitToAppIcon /> },
-  ];
 
   return (
     <Box>
       <Button
-        aria-controls='simple-menu'
-        aria-haspopup='true'
+        aria-controls="simple-menu"
+        aria-haspopup="true"
+        style={{ color: "#fff", textTransform: "none" }}
         onClick={handleClick}
-        startIcon={
-          <Avatar src={AccountCircleIcon} className={classes.navAvatar}></Avatar>
-        }></Button>
-      <Menu
-        id='simple-menu'
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}>
-        {dropDownData.map((item, i) => (
-          <MenuItem key={i} component={ListItem} onClick={handleClose}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText>{item.label}</ListItemText>
-          </MenuItem>
-        ))}
-      </Menu>
+      >
+        Log out
+      </Button>
     </Box>
   );
 }

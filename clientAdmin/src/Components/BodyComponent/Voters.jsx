@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Card,
   Grid,
-  CardHeader,
-  CardContent,
-  Avatar,
-  Button,
   CircularProgress,
   Container,
-  TextField,
 } from "@material-ui/core";
 import { PageHeader } from "../Common/CommonComponent";
 import { useStyles } from "./BodyStyles";

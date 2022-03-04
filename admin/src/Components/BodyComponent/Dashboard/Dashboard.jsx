@@ -10,32 +10,57 @@ import {
   fakeArrayDataGenerator,
   randomValueGenerator,
 } from "../../../utils/fakeArrayDataGenetator";
+import axios from "axios";
 
 export default function Dashboard() {
   const classes = useStyles();
+  const [host, setHost] = useState(0);
+  const [activehost, setActiveHost] = useState(0);
+  const [completed, setCompleted] = useState(0);
+  const [users, setUsers] = useState(0);
+
+ useEffect(() => {
+    getCardDetails();
+  }, []);
+
+  const getCardDetails = async () => {
+    try {
+      const getStats = await axios.get(
+        "http://localhost:5000/api/admin/getstats"
+      );
+
+      setHost(getStats.data.hosts);
+      setActiveHost(getStats.data.activeHosts);
+      setCompleted(getStats.data.completedCampaigns);
+      setUsers(getStats.data.totalUsers);
+
+    } catch (error) {
+      window.alert(error.message);
+    }
+  };
 
   const DisplayData = [
     {
       label: "Total Hosts",
-      value: randomValueGenerator({ digit: 1000 }),
+      value: host,
       icon: <ArrowDropUpIcon />,
       iconLabel: "4%",
     },
     {
       label: "Active Campaigns",
-      value: randomValueGenerator({ digit: 100 }),
+      value: activehost,
       icon: <ArrowDropUpIcon />,
       iconLabel: "9%",
     },
     {
       label: "Completed Campaigns",
-      value: randomValueGenerator({ digit: 100 }),
+      value: completed,
       icon: <ArrowDropDownIcon />,
       iconLabel: "23%",
     },
     {
-      label: "Total Voters",
-      value: randomValueGenerator({ digit: 1000 }),
+      label: "Total Users",
+      value: users,
       icon: <ArrowDropDownIcon />,
       iconLabel: "30%",
     },
@@ -43,11 +68,6 @@ export default function Dashboard() {
 
   return (
     <Box>
-      {/* section title
-      section card
-      section graph
-      section posts */}
-
       <PageHeader label="Dashboard" pageTitle="Pollice Overview" />
       <Grid container spacing={1}>
         {DisplayData.map((item, i) => (

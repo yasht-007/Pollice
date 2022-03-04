@@ -3,9 +3,9 @@ const app = express();
 const dotenv = require("dotenv");
 const cors = require("cors");
 const User = require("./models/voter.modal");
+const Admin = require("./models/admin.modal");
 const ElectionHost = require("./models/electionHost.modal");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
 const sendEmail = require("./config/sendEmail");
 const sendRejectEmail = require("./config/sendRejectEmail");
@@ -858,9 +858,118 @@ app.post("/api/host/winner", jwtVerify, async (req, res) => {
   }
 });
 
-app.post("/api/alllowedornot", async (req, res) => {
+app.post("/api/checkadmin", async (req, res) => {
   try {
-    const getAllowed = await ElectionHost.findOne({});
+    const adminFetch = await Admin.findOne();
+    if (adminFetch.key === req.body.key) {
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({ status: "error" });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.get("/api/admin/elections", async (req, res) => {
+  try {
+    const elections = await ElectionHost.find(
+      {
+        status: "approved",
+      },
+      {
+        _id: 1,
+        email: 1,
+        organizationName: 1,
+        typeOfOrg: 1,
+        eStartDate: 1,
+        eEndDate: 1,
+        electionStatus: 1,
+      }
+    );
+
+    if (!elections || elections === null || elections.length === 0) {
+      return res.json({ status: "error", error: "No elections found" });
+    } else {
+      return res.json({ status: "ok", elections: elections });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.get("/api/admin/users", async (req, res) => {
+  try {
+    const Users = await User.find(
+      {},
+      {
+        _id: 1,
+        email: 1,
+        name: 1,
+        aadharNumber: 1,
+        walletAddress: 1,
+      }
+    );
+
+    if (!Users || Users === null || Users.length === 0) {
+      return res.json({ status: "error", error: "No user found" });
+    } else {
+      return res.json({ status: "ok", users: Users });
+    }
+  } catch (error) {
+    return res.json({ status: "error", error: error.message });
+  }
+});
+
+app.get("/api/admin/getstats", async (req, res) => {
+  var A, B, C, D;
+  try {
+    const totalHosts = await ElectionHost.find({
+      status: "approved",
+    });
+
+    if (totalHosts.length === 0) {
+      A = 0;
+    } else {
+      A = totalHosts.length;
+    }
+
+    const totalActiveHosts = await ElectionHost.find({
+      status: "approved",
+      $or: [{ electionStatus: "Deployed" }, { electionStatus: "Started" }],
+    });
+
+    if (totalActiveHosts.length === 0) {
+      B = 0;
+    } else {
+      B = totalActiveHosts.length;
+    }
+
+    const completedCampaigns = await ElectionHost.find({
+      status: "approved",
+      electionStatus: "Result",
+    });
+
+    if (completedCampaigns.length === 0) {
+      C = 0;
+    } else {
+      C = completedCampaigns.length;
+    }
+
+    const totalUsers = await User.find();
+
+    if (totalUsers.length === 0) {
+      D = 0;
+    } else {
+      D = totalUsers.length;
+    }
+
+    return res.json({
+      hosts: A,
+      activeHosts: B,
+      completedCampaigns: C,
+      totalUsers: D,
+    });
   } catch (error) {
     return res.json({ status: "error", error: error.message });
   }

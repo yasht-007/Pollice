@@ -19,8 +19,8 @@ export default function SidenavData({ handleDrawerClose }) {
   const listItemData = [
     { label: "Dashboard", link: "/", icon: <DashboardIcon /> },
     { label: "Requests", link: "/requests", icon: <BookIcon /> },
-    { label: "Candidates", link: "/candidates", icon: <PostAddIcon /> },
-    { label: "Voters", link: "/voters", icon: <PostAddIcon /> },
+    { label: "Elections", link: "/elections", icon: <PostAddIcon /> },
+    { label: "Users", link: "/users", icon: <PostAddIcon /> },
     { label: "Logout", link: "/logout", icon: <ExitToAppIcon /> },
   ];
   return (

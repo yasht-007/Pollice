@@ -5,8 +5,8 @@ import Sidenav from "./Sidenav";
 import { Switch, Route } from "react-router-dom";
 import Dashboard from "../BodyComponent/Dashboard/Dashboard";
 import ElectionComponent from "../BodyComponent/ElectionComponent";
-import Candidates from "../BodyComponent/Candidates";
-import Voters from "../BodyComponent/Voters";
+import Elections from "../BodyComponent/Elections";
+import Users from "../BodyComponent/Users";
 
 import Logout from "../BodyComponent/Logout";
 import { useStyles } from "./HeaderStyles";
@@ -34,8 +34,8 @@ export default function HeaderComponent() {
         <Switch>
           {/* <Route path='/' component={<Dashboard />} /> */}
           <Route exact path="/requests" render={() => <ElectionComponent />} />
-          <Route exact path="/candidates" render={() => <Candidates />} />
-          <Route exact path="/voters" render={() => <Voters />} />
+          <Route exact path="/elections" render={() => <Elections />} />
+          <Route exact path="/users" render={() => <Users />} />
           <Route exact path="/logout" render={() => <Logout />} />
           <Route exact path="/" render={() => <Dashboard />} />
         </Switch>
