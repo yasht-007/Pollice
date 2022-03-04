@@ -61,9 +61,12 @@ export default function Voters() {
       getElectionStatus();
       if (electionStatus === "Deployed") {
         getRequests();
-      } else if (electionStatus === "Started" ||
-      electionStatus === "Ended" ||
-      electionStatus === "Result") {
+        getApprovedVoters();
+      } else if (
+        electionStatus === "Started" ||
+        electionStatus === "Ended" ||
+        electionStatus === "Result"
+      ) {
         getApprovedVoters();
       }
     }
@@ -73,7 +76,7 @@ export default function Voters() {
     if (electionStatus === "Deployed" && account.wallet) {
       getContractData();
     }
-  }, [account,electionStatus]);
+  }, [account, electionStatus]);
 
   const columns = [
     { title: "Name", field: "name" },
@@ -184,12 +187,12 @@ export default function Voters() {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
-        electionId: localStorage.getItem("id"),
+        email: localStorage.getItem("email"),
       })
       .then((res) => {
         if (res.data.status === "ok") {
           const hosts = res.data.approvedvoters;
-          setApprovedPosts({ data: hosts.voters });
+          setApprovedPosts({ data: hosts });
         } else {
           setApprovedPosts({ data: [] });
         }
@@ -252,7 +255,9 @@ export default function Voters() {
                     },
                   ]}
                 />
-              ) : (
+              ) : null}
+
+              {account.wallet ? (
                 <MaterialTable
                   title="Voter Management:"
                   columns={columns}
@@ -260,6 +265,7 @@ export default function Voters() {
                   style={{
                     textAlign: "center",
                     textOverflow: "ellipsis",
+                    marginTop: "20px",
                   }}
                   options={{
                     actionsCellStyle: {
@@ -276,7 +282,7 @@ export default function Voters() {
                   }}
                   icons={tableIcons}
                 />
-              )}
+              ) : null}
             </Container>
           </>
         )}

@@ -19,12 +19,10 @@ app.use(express.json());
 
 app.post("/api/register", async (req, res) => {
   try {
-    const newAadhar = await bcrypt.hash(req.body.aadharNumber, 10);
-
     await User.create({
       name: req.body.name,
       email: req.body.email,
-      aadharNumber: newAadhar,
+      aadharNumber: req.body.aadharNumber,
       walletAddress: req.body.walletAddress,
     });
     res.json({ status: "ok" });
@@ -418,30 +416,6 @@ app.post("/api/elections/registervoter", async (req, res) => {
   }
 });
 
-// app.post("/api/elections/voterregisterstatus", async (req, res) => {
-//   try {
-//     const walletInOrNot = await ElectionHost.findOne({
-//       _id: req.body.electionId,
-//       voters: {
-//         $elemMatch: {
-//           name: "Rudra Pathak",
-//           walletAddress: req.body.walletAddress,
-//         },
-//       },
-//     });
-
-//     // console.log(walletInOrNot);
-
-//     if (!walletInOrNot || walletInOrNot === null) {
-//       return res.json({ status: "ok" });
-//     } else {
-//       return res.json({ status: "error" });
-//     }
-//   } catch (error) {
-//     return res.json({ status: "error", error: error.message });
-//   }
-// });
-
 app.post("/api/host/getvoters", jwtVerify, async (req, res) => {
   try {
     const voters = await ElectionHost.findOne(
@@ -617,7 +591,7 @@ app.post("/api/host/approvedvoters", jwtVerify, async (req, res) => {
   try {
     const approvedVoters = await ElectionHost.findOne(
       {
-        _id: req.body.electionId,
+        email: req.body.email,
         "voters.approvalStatus": "Approved",
       },
       {
@@ -628,7 +602,13 @@ app.post("/api/host/approvedvoters", jwtVerify, async (req, res) => {
     if (!approvedVoters || approvedVoters === null) {
       return res.json({ status: "error", error: "Invalid Voters" });
     } else {
-      return res.json({ status: "ok", approvedvoters: approvedVoters });
+      var vList = [];
+      for (let i = 0; i < approvedVoters.voters.length; i++) {
+        if (approvedVoters.voters[i].approvalStatus === "Approved") {
+          vList.push(approvedVoters.voters[i]);
+        }
+      }
+      return res.json({ status: "ok", approvedvoters: vList });
     }
   } catch (error) {
     return res.json({ status: "error", error: error.message });
@@ -878,15 +858,13 @@ app.post("/api/host/winner", jwtVerify, async (req, res) => {
   }
 });
 
-app.post("/api/alllowedornot",async (req,res)=>{
+app.post("/api/alllowedornot", async (req, res) => {
   try {
-    const getAllowed = await ElectionHost.findOne({
-      
-    });
+    const getAllowed = await ElectionHost.findOne({});
   } catch (error) {
     return res.json({ status: "error", error: error.message });
   }
-})
+});
 
 const PORT = process.env.PORT || 5000;
 
