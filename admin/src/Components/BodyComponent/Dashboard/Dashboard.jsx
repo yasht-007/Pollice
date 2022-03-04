@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, Grid, Typography, Button } from "@material-ui/core";
+import { Box, Card, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../BodyStyles";
 import { PageHeader } from "../../Common/CommonComponent";
 import { CardContent } from "@material-ui/core";
 
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import {
-  fakeArrayDataGenerator,
-  randomValueGenerator,
-} from "../../../utils/fakeArrayDataGenetator";
 import axios from "axios";
 
 export default function Dashboard() {

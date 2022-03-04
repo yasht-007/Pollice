@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Card,
   Grid,
   Typography,
-  Button,
   Container,
 } from "@material-ui/core";
 import { useStyles } from "../BodyStyles";
@@ -13,10 +12,6 @@ import { CardContent } from "@material-ui/core";
 
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import {
-  fakeArrayDataGenerator,
-  randomValueGenerator,
-} from "../../../utils/fakeArrayDataGenetator";
 import { ElectionHostState } from "../../HostContext";
 import axios from "axios";
 
@@ -25,7 +20,7 @@ export default function Dashboard() {
   const { host, setHost, account } = ElectionHostState();
 
   useEffect(() => {
-    getData();
+    getData(); // eslint-disable-next-line
   }, []);
 
   const getData = async () => {

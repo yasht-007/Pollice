@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Button, Typography } from "@material-ui/core";
-import { useStyles } from "../HeaderStyles";
 import { ElectionHostState } from "../../HostContext";
 import {
   checkCorrectNetwork,
@@ -11,11 +10,10 @@ import {
 } from "../../../utils/web3Action";
 
 export default function Profile() {
-  const classes = useStyles();
   const { setLogin, account, setAccount } = ElectionHostState();
 
   const handleClick = (event) => {
-   localStorage.clear();
+    localStorage.clear();
     setLogin("");
   };
 
@@ -44,7 +42,6 @@ export default function Profile() {
       },
       showAlert(true)
     );
-
   };
 
   const disconnectWallet = () => {

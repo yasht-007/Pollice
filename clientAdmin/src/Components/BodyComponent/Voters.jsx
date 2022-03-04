@@ -63,13 +63,13 @@ export default function Voters() {
       ) {
         getApprovedVoters();
       }
-    }
+    } // eslint-disable-next-line
   }, [refreshKey, electionStatus, account]);
 
   useEffect(() => {
     if (electionStatus === "Deployed" && account.wallet) {
       getContractData();
-    }
+    } // eslint-disable-next-line
   }, [account, electionStatus]);
 
   const columns = [

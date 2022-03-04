@@ -22,6 +22,26 @@ const Register = () => {
   const { account, setAlert } = ElectionState();
   const goHome = useNavigate();
 
+  const validateDetails = (e) => {
+    if (email === "" || name === "" || aadharNumber === "") {
+      setAlert({
+        type: "error",
+        open: true,
+        message: "Please fill all the details",
+        time: 3000,
+      });
+    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      setAlert({
+        open: true,
+        type: "error",
+        message: "Email is invalid",
+        time: 2000,
+      });
+    } else {
+      registerVoter(e);
+    }
+  };
+
   const registerVoter = async (e) => {
     e.preventDefault();
     if (account.wallet === false) {
@@ -95,15 +115,16 @@ const Register = () => {
               />
               <FormLabel htmlFor="for">Aadhaar number: </FormLabel>
               <FormInput
-                type="number"
+                type="text"
                 required
+                maxLength="12"
                 onWheel={(e) => e.target.blur()}
                 onChange={(e) => setAadharNumber(e.target.value)}
               />
               <FormLabel htmlFor="for">Wallet Address: </FormLabel>
               <Text>{account.address}</Text>
               <br />
-              <FormButton type="submit" onClick={registerVoter}>
+              <FormButton type="submit" onClick={validateDetails}>
                 Register
               </FormButton>
             </Form>

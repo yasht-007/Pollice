@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     if(localStorage.getItem("loggedIn")){
       setLogin(localStorage.getItem("loggedIn"));
-    }
+    } // eslint-disable-next-line
   }, [login]);
 
   return (

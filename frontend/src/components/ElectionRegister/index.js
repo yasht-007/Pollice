@@ -38,21 +38,12 @@ const Register = () => {
     setSelect(value);
   };
 
-  // const validateEmail = (email) => {
-  //   return email.match(
-  //     //eslint-disable-next-line
-  //     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  //   );
-  // };
-
-  // function validatePhone(inputtxt) {
-  //   var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-  //   if (inputtxt.value.match(phoneno)) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+  function validatePhone() {
+    if (phoneNo.length !== 10) {
+      return false;
+    }
+    return true;
+  }
 
   function validateDetails(event) {
     event.preventDefault();
@@ -71,23 +62,21 @@ const Register = () => {
         message: "Please fill all the details",
         time: 2000,
       });
-    }
-    //  else if (validateEmail(email) === false) {
-    //   setAlert({
-    //     open: true,
-    //     type: "error",
-    //     message: "Please enter valid email",
-    //     time: 2000,
-    //   });
-    // } else if (validatePhone(phoneNo) === false) {
-    //   setAlert({
-    //     open: true,
-    //     type: "error",
-    //     message: "Please enter valid phone number",
-    //     time: 2000,
-    //   });
-    // }
-    else {
+    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      setAlert({
+        open: true,
+        type: "error",
+        message: "Email is invalid",
+        time: 2000,
+      });
+    } else if (validatePhone() === false) {
+      setAlert({
+        open: true,
+        type: "error",
+        message: "Contact number is invalid",
+        time: 2000,
+      });
+    } else {
       axios
         .post("http://localhost:5000/api/election/host", {
           name: name,

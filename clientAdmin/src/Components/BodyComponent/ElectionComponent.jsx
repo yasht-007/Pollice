@@ -5,7 +5,6 @@ import {
   Grid,
   CardContent,
   Button,
-  CircularProgress,
   Container,
   TextField,
 } from "@material-ui/core";
@@ -65,7 +64,7 @@ export default function ElectionComponent() {
   useEffect(() => {
     if (account.wallet && electionStatus !== "Not Active") {
       getContractData();
-    }
+    } // eslint-disable-next-line
   }, [account, electionStatus]);
 
   useEffect(() => {
@@ -97,12 +96,7 @@ export default function ElectionComponent() {
         setResultButtonClick(true);
       }
     }
-    //  else {
-    //   setButtonClick(false);
-    //   setStartButtonClick(false);
-    //   setEndButtonClick(false);
-    //   setResultButtonClick(false);
-    // }
+    // eslint-disable-next-line
   }, [isDeployed, account, electionStatus]);
 
   useEffect(() => {

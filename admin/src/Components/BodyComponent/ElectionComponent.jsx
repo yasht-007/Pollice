@@ -66,9 +66,8 @@ export default function ElectionComponent() {
         email: email,
       })
       .then((res) => {
-        if (res.status == 200) {
+        if (res.data.status === "ok") {
           setRefreshKey((oldKey) => oldKey + 1);
-          //window.alert("Approved!");
         }
       })
       .catch((err) => {
@@ -82,7 +81,7 @@ export default function ElectionComponent() {
         email: email,
       })
       .then((res) => {
-        if (res.status == 200) {
+        if (res.data.status === "ok") {
           setRefreshKey((oldKey) => oldKey + 1);
         }
       })

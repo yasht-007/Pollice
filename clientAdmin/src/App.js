@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import {  useEffect } from "react";
 import { ElectionHostState } from "./Components/HostContext";
 import HeaderComponent from "./Components/Header/HeaderComponent";
 import Login from "./Components/Login";
@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     if(localStorage.getItem("token")){
       setLogin(localStorage.getItem("token"));
-    }
+    } // eslint-disable-next-line
   }, [login]);
 
   return (
@@ -21,7 +21,7 @@ function App() {
           <Route
             exact
             path="*"
-            element={login == "" ? <Login /> : <HeaderComponent />}
+            element={login === "" ? <Login /> : <HeaderComponent />}
           />
         </Routes>
       </BrowserRouter>

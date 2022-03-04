@@ -53,7 +53,7 @@ export default function Candidates() {
       }
     } else {
       setButtonClick(true);
-    }
+    } // eslint-disable-next-line
   }, [account, electionStatus]);
 
   const columns = [
@@ -92,7 +92,7 @@ export default function Candidates() {
         walletAddress: cAddress,
       })
       .then((res) => {
-        if (res.data.status == "ok") {
+        if (res.data.status === "ok") {
           window.alert("Added!");
           setRefreshKey(refreshKey + 1);
           textInput.current.value = "";
@@ -119,7 +119,7 @@ export default function Candidates() {
         walletAddress: cAddress,
       })
       .then((res) => {
-        if (res.data.status == "ok") {
+        if (res.data.status === "ok") {
           window.alert("Deleted!");
           setRefreshKey(refreshKey + 1);
           textInput.current.value = "";
