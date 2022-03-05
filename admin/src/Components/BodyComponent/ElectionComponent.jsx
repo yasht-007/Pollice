@@ -48,7 +48,7 @@ export default function ElectionComponent() {
 
   const getRequests = async () => {
     await axios
-      .get("http://localhost:5000/api/admin/hosts")
+      .get("https://pollice-election.herokuapp.com/api/admin/hosts")
       .then((res) => {
         if (res.status === 200) {
           const hosts = res.data.hosts;
@@ -62,7 +62,7 @@ export default function ElectionComponent() {
 
   const approveHost = (email) => {
     axios
-      .post("http://localhost:5000/api/admin/approve", {
+      .post("https://pollice-election.herokuapp.com/api/admin/approve", {
         email: email,
       })
       .then((res) => {
@@ -77,7 +77,7 @@ export default function ElectionComponent() {
 
   const rejectHost = (email) => {
     axios
-      .post("http://localhost:5000/api/admin/reject", {
+      .post("https://pollice-election.herokuapp.com/api/admin/reject", {
         email: email,
       })
       .then((res) => {

@@ -61,7 +61,7 @@ const Register = () => {
         type: "error",
         message: "Please fill all the details",
         time: 2000,
-      });
+      }); // eslint-disable-next-line
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setAlert({
         open: true,
@@ -78,7 +78,7 @@ const Register = () => {
       });
     } else {
       axios
-        .post("http://localhost:5000/api/election/host", {
+        .post("https://pollice-election.herokuapp.com/api/election/host", {
           name: name,
           email: email,
           regNo: regNo === "" ? "NA" : regNo,
@@ -132,7 +132,7 @@ const Register = () => {
               />
               <FormLabel htmlFor="for">Contact number: </FormLabel>
               <FormInput
-                type="number"
+                type="text"
                 maxLength="10"
                 required
                 onWheel={(e) => e.target.blur()}
@@ -141,7 +141,7 @@ const Register = () => {
 
               <FormLabel htmlFor="for">Registration number: </FormLabel>
               <FormInput
-                type="number"
+                type="text"
                 required
                 onWheel={(e) => e.target.blur()}
                 onChange={(e) => setRegNo(e.target.value)}

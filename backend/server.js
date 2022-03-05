@@ -12,10 +12,21 @@ const sendRejectEmail = require("./config/sendRejectEmail");
 const jwtVerify = require("./config/JwtVerify");
 const deployContract = require("./config/deploy");
 
-dotenv.config({ path: "../.env" });
+dotenv.config();
 connectDB();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+  })
+);
+app.options("*", cors());
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the voting app");
+});
 
 app.post("/api/register", async (req, res) => {
   try {
@@ -27,7 +38,7 @@ app.post("/api/register", async (req, res) => {
     });
     res.json({ status: "ok" });
   } catch (error) {
-    res.json({ status: "error", error: "Wallet already Registerd" });
+    res.json({ status: "error", error: error.message });
   }
 });
 

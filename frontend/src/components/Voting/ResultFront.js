@@ -1,15 +1,13 @@
 import styled from "styled-components";
 import voteImg from "./vote.png";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { Typography } from "@material-ui/core";
 import { ElectionState } from "../../ElectionContext";
-import web3 from "../../config/web3";
 
 const ResultFront = () => {
   const { _id } = useParams();
-  const { winnerId,winnerName } = ElectionState();
-  
+  const { winnerId, winnerName } = ElectionState();
 
   return (
     <Front>

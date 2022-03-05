@@ -58,7 +58,7 @@ const Election = () => {
   useEffect(() => {
     if (account.wallet && host.data.electionStatus === "Result" && refreshKey !== 0) {
       getAllCardDetails();
-    }
+    } // eslint-disable-next-line
   }, [account, host,refreshKey]);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const Election = () => {
 
   const getHostData = async () => {
     axios
-      .post("http://localhost:5000/api/getElectionHostData", {
+      .post("https://pollice-election.herokuapp.com/api/getElectionHostData", {
         id: _id,
       })
       .then((res) => {
@@ -79,7 +79,7 @@ const Election = () => {
   const getContractData = async () => {
     try {
       const cData = await axios.post(
-        "http://localhost:5000/api/getContractDetails",
+        "https://pollice-election.herokuapp.com/api/getContractDetails",
         {
           id: _id,
         }
@@ -112,7 +112,7 @@ const Election = () => {
 
   const getVoterStatus = async () => {
     const voteStatus = await axios.post(
-      "http://localhost:5000/api/election/getmyvotingstatus",
+      "https://pollice-election.herokuapp.com/api/election/getmyvotingstatus",
       {
         id: _id,
         walletAddress: account.address,

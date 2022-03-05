@@ -29,7 +29,7 @@ const Register = () => {
         open: true,
         message: "Please fill all the details",
         time: 3000,
-      });
+      }); // eslint-disable-next-line
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setAlert({
         open: true,
@@ -56,7 +56,7 @@ const Register = () => {
     } else {
       const walletAddress = account.address;
 
-      const response = await fetch("http://localhost:5000/api/register", {
+      const response = await fetch("https://pollice-election.herokuapp.com/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

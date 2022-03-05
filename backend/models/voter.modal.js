@@ -9,7 +9,10 @@ const Voter = new mongoose.Schema(
 
     registerations: [
       {
-        eId: { type: String, required: false, unique: true },
+        type: Object,
+        required: false,
+        unique: false,
+        eId: { type: String, required: false },
         approvalStatus: { type: String, required: false },
       },
     ],

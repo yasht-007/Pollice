@@ -35,7 +35,7 @@ const HostContext = ({ children }) => {
   const getContractData = async () => {
     try {
       const cData = await axios.post(
-        "http://localhost:5000/api/host/getabiandcontract",
+        "https://pollice-election.herokuapp.com/api/host/getabiandcontract",
         {
           headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -57,7 +57,7 @@ const HostContext = ({ children }) => {
 
   const getElectionStatus = async () => {
     await axios
-      .post("http://localhost:5000/api/host/getelectionstatus", {
+      .post("https://pollice-election.herokuapp.com/api/host/getelectionstatus", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },

@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages";
 import Alert from "./components/Alert";
@@ -18,7 +18,7 @@ function App() {
       setAllowed(true);
     } else {
       console.log("No account details found");
-    }
+    } // eslint-disable-next-line
   }, []);
 
   return (

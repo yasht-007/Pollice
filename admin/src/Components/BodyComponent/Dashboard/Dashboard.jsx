@@ -22,7 +22,7 @@ export default function Dashboard() {
   const getCardDetails = async () => {
     try {
       const getStats = await axios.get(
-        "http://localhost:5000/api/admin/getstats"
+        "https://pollice-election.herokuapp.com/api/admin/getstats"
       );
 
       setHost(getStats.data.hosts);

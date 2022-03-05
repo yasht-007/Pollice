@@ -142,7 +142,7 @@ const Evoting = () => {
   const getCandidates = async () => {
     try {
       const getCandidateData = await axios.post(
-        "http://localhost:5000/api/getCandidates",
+        "https://pollice-election.herokuapp.com/api/getCandidates",
         {
           id: _id,
         }
@@ -189,7 +189,7 @@ const Evoting = () => {
 
   const updateToDatabase = async () => {
     const voteStats = await axios.post(
-      "http://localhost:5000/api/election/vote",
+      "https://pollice-election.herokuapp.com/api/election/vote",
       {
         id: _id,
         walletAddress: account.address,
@@ -273,7 +273,7 @@ const Evoting = () => {
 
   const getVoterStatus = async () => {
     const voteStatus = await axios.post(
-      "http://localhost:5000/api/election/getmyvotingstatus",
+      "https://pollice-election.herokuapp.com/api/election/getmyvotingstatus",
       {
         id: _id,
         walletAddress: account.address,

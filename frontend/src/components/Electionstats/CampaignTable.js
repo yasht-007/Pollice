@@ -130,7 +130,7 @@ const CampaignTable = () => {
         )
       ) {
         await axios
-          .post("http://localhost:5000/api/elections/registervoter", {
+          .post("https://pollice-election.herokuapp.com/api/elections/registervoter", {
             name: user.name,
             email: user.email,
             aadhar: user.aadharNumber,

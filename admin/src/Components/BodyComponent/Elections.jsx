@@ -42,7 +42,7 @@ export default function Elections() {
 
   const getElections = async () => {
     try {
-      const getElection = await axios.get("http://localhost:5000/api/admin/elections");
+      const getElection = await axios.get("https://pollice-election.herokuapp.com/api/admin/elections");
 
       if (getElection.data.status === "ok") {
         setElections({

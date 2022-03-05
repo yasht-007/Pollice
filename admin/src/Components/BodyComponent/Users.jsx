@@ -37,7 +37,7 @@ export default function Users() {
 
   const getUsers = async () => {
     try {
-      const Users = await axios.get("http://localhost:5000/api/admin/users");
+      const Users = await axios.get("https://pollice-election.herokuapp.com/api/admin/users");
 
       if (Users.data.status === "ok") {
         setUsers({
