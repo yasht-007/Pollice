@@ -17,6 +17,10 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", function (req, res) {
+  res.send("Pollice is running!");
+});
+
 app.post("/api/register", async (req, res) => {
   try {
     await User.create({
