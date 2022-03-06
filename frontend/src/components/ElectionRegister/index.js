@@ -114,7 +114,7 @@ const Register = () => {
           setAlert({
             open: true,
             type: "error",
-            message: error.message,
+            message: err.message,
             time: 8000,
           });
         });
