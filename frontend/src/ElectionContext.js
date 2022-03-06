@@ -54,7 +54,7 @@ const ElectionContext = ({ children }) => {
   const fetchElections = async () => {
     setLoading(true);
     await axios
-      .get("https://pollice-election.herokuapp.com/api/elections")
+      .get("https://pollice-elections.herokuapp.com/api/elections")
       .then((res) => {
         if (res.data.status === "ok") {
           setElections(res.data.elections);
@@ -78,7 +78,7 @@ const ElectionContext = ({ children }) => {
 
   const fetchUser = async () => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/voterstatus", {
+      .post("https://pollice-elections.herokuapp.com/api/voterstatus", {
         walletAddress: account.address,
       })
       .then((res) => {

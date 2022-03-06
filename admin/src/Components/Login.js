@@ -42,7 +42,7 @@ const Login = () => {
     } //eslint-disable-next-line
     else {
       await axios
-        .post("https://pollice-election.herokuapp.com/api/checkadmin", {
+        .post("https://pollice-elections.herokuapp.com/api/checkadmin", {
           key: key,
         })
         .then((res) => {

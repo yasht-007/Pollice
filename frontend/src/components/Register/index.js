@@ -56,7 +56,7 @@ const Register = () => {
     } else {
       const walletAddress = account.address;
 
-      const response = await fetch("https://pollice-election.herokuapp.com/api/register", {
+      const response = await fetch("https://pollice-elections.herokuapp.com/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

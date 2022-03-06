@@ -78,7 +78,7 @@ const Register = () => {
       });
     } else {
       axios
-        .post("https://pollice-election.herokuapp.com/api/election/host", {
+        .post("https://pollice-elections.herokuapp.com/api/election/host", {
           name: name,
           email: email,
           regNo: regNo === "" ? "NA" : regNo,

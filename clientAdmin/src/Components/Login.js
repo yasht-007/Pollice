@@ -45,7 +45,7 @@ const Login = () => {
       window.alert("Email is invalid");
     } else {
       await axios
-        .post("https://pollice-election.herokuapp.com/api/host/login", {
+        .post("https://pollice-elections.herokuapp.com/api/host/login", {
           email: email,
           key: key,
         })

@@ -33,7 +33,7 @@ const HeroSection = () => {
   }, [account]);
 
   const checkVoterStatus = async () => {
-    const response = await fetch("https://pollice-election.herokuapp.com/api/voterstatus", {
+    const response = await fetch("https://pollice-elections.herokuapp.com/api/voterstatus", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

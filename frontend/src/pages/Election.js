@@ -67,7 +67,7 @@ const Election = () => {
 
   const getHostData = async () => {
     axios
-      .post("https://pollice-election.herokuapp.com/api/getElectionHostData", {
+      .post("https://pollice-elections.herokuapp.com/api/getElectionHostData", {
         id: _id,
       })
       .then((res) => {
@@ -79,7 +79,7 @@ const Election = () => {
   const getContractData = async () => {
     try {
       const cData = await axios.post(
-        "https://pollice-election.herokuapp.com/api/getContractDetails",
+        "https://pollice-elections.herokuapp.com/api/getContractDetails",
         {
           id: _id,
         }
@@ -112,7 +112,7 @@ const Election = () => {
 
   const getVoterStatus = async () => {
     const voteStatus = await axios.post(
-      "https://pollice-election.herokuapp.com/api/election/getmyvotingstatus",
+      "https://pollice-elections.herokuapp.com/api/election/getmyvotingstatus",
       {
         id: _id,
         walletAddress: account.address,

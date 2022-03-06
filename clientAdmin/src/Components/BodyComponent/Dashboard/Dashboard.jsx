@@ -26,7 +26,7 @@ export default function Dashboard() {
   const getData = async () => {
     const token = localStorage.getItem("token");
     axios
-      .post("https://pollice-election.herokuapp.com/api/host/getdata", {
+      .post("https://pollice-elections.herokuapp.com/api/host/getdata", {
         headers: {
           "x-access-token": token,
         },

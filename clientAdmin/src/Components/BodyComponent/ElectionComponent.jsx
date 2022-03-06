@@ -161,7 +161,7 @@ export default function ElectionComponent() {
 
   const getRequests = async () => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/getcandidate", {
+      .post("https://pollice-elections.herokuapp.com/api/host/getcandidate", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -193,7 +193,7 @@ export default function ElectionComponent() {
     deployDate = deployDate.toString();
 
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/setcontractandabi", {
+      .post("https://pollice-elections.herokuapp.com/api/host/setcontractandabi", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -243,7 +243,7 @@ export default function ElectionComponent() {
       };
 
       await axios
-        .post("https://pollice-election.herokuapp.com/api/host/deployContract", {
+        .post("https://pollice-elections.herokuapp.com/api/host/deployContract", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
@@ -294,7 +294,7 @@ export default function ElectionComponent() {
 
   const updateStartStatus = async () => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/startelections", {
+      .post("https://pollice-elections.herokuapp.com/api/host/startelections", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -365,7 +365,7 @@ export default function ElectionComponent() {
 
   const updateEndStatus = async () => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/endelections", {
+      .post("https://pollice-elections.herokuapp.com/api/host/endelections", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -416,7 +416,7 @@ export default function ElectionComponent() {
 
   const updateResultStatus = async (result) => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/declareresult", {
+      .post("https://pollice-elections.herokuapp.com/api/host/declareresult", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -461,7 +461,7 @@ export default function ElectionComponent() {
   const getWinners = async () => {
     try {
       const resultWinner = await axios.post(
-        "https://pollice-election.herokuapp.com/api/host/winner",
+        "https://pollice-elections.herokuapp.com/api/host/winner",
         {
           headers: {
             "x-access-token": localStorage.getItem("token"),

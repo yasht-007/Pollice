@@ -84,7 +84,7 @@ export default function Voters() {
 
   const getRequests = async () => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/getvoters", {
+      .post("https://pollice-elections.herokuapp.com/api/host/getvoters", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -105,7 +105,7 @@ export default function Voters() {
 
   const updateToDatabase = async (walletAddress) => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/approvevoter", {
+      .post("https://pollice-elections.herokuapp.com/api/host/approvevoter", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -155,7 +155,7 @@ export default function Voters() {
 
   const declineVoter = async (declineWalletAddress) => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/declinevoter", {
+      .post("https://pollice-elections.herokuapp.com/api/host/declinevoter", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -177,7 +177,7 @@ export default function Voters() {
 
   const getApprovedVoters = async () => {
     await axios
-      .post("https://pollice-election.herokuapp.com/api/host/approvedvoters", {
+      .post("https://pollice-elections.herokuapp.com/api/host/approvedvoters", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
