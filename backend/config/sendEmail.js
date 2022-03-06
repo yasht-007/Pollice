@@ -49,7 +49,7 @@ const sendEmail = async (email) => {
     from: process.env.EMAIL_USERNAME, // Sender address
     to: email, // List of recipients
     subject: "Approval confirmation for Pollice Election Hosting", // Subject line
-    text: `Hello People!, Welcome to Pollice! You are approved to host an election on our platform. Your private key is ${key}. Use the url "http://localhost:3004/" to get access to hosting panel. Please keep in mind that sharing your private key will cause fradulent.`, // Plain text body
+    text: `Hello People!, Welcome to Pollice! You are approved to host an election on our platform. Your private key is ${key}. Use the url "https://pollice.netlify.app/" to get access to hosting panel. Please keep in mind that sharing your private key will cause fradulent.`, // Plain text body
   };
 
   transport.sendMail(mailOptions, function (err, info) {
