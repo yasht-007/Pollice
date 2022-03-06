@@ -132,19 +132,6 @@ const Navbar = ({ toggle }) => {
                   Campaigns
                 </NavLinks>
               </NavItem>
-              {/* 
-              <NavItem>
-                <NavLinks
-                  to="pollice"
-                  smooth={true}
-                  duration={500}
-                  spy={true}
-                  exact="true"
-                  offset={-80}
-                >
-                  FAQ
-                </NavLinks>
-              </NavItem> */}
 
               <NavItem>
                 <NavLinks
