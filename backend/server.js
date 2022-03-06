@@ -12,7 +12,7 @@ const sendRejectEmail = require("./config/sendRejectEmail");
 const jwtVerify = require("./config/JwtVerify");
 const deployContract = require("./config/deploy");
 
-dotenv.config({ path: "../.env" });
+dotenv.config();
 connectDB();
 app.use(cors());
 app.use(express.json());
