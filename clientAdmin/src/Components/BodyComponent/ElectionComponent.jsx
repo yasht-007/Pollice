@@ -168,7 +168,7 @@ export default function ElectionComponent() {
         email: localStorage.getItem("email"),
       })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.data.status === "ok") {
           const cand = res.data.cand;
           setPosts({ data: cand.candidates });
         }
@@ -193,16 +193,19 @@ export default function ElectionComponent() {
     deployDate = deployDate.toString();
 
     await axios
-      .post("https://pollice-elections.herokuapp.com/api/host/setcontractandabi", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        email: localStorage.getItem("email"),
-        abi: abi,
-        contractAddress: contractAddress,
-        walletAddress: defaultAccount,
-        deployDate: deployDate,
-      })
+      .post(
+        "https://pollice-elections.herokuapp.com/api/host/setcontractandabi",
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+          email: localStorage.getItem("email"),
+          abi: abi,
+          contractAddress: contractAddress,
+          walletAddress: defaultAccount,
+          deployDate: deployDate,
+        }
+      )
       .then((res) => {
         if (res.data.status === "ok") {
           setStartButtonClick(true);
@@ -243,13 +246,16 @@ export default function ElectionComponent() {
       };
 
       await axios
-        .post("https://pollice-elections.herokuapp.com/api/host/deployContract", {
-          headers: {
-            "x-access-token": localStorage.getItem("token"),
-          },
-        })
+        .post(
+          "https://pollice-elections.herokuapp.com/api/host/deployContract",
+          {
+            headers: {
+              "x-access-token": localStorage.getItem("token"),
+            },
+          }
+        )
         .then((res) => {
-          if (res.status === 200) {
+          if (res.data.status === "ok") {
             abi = res.data.abi;
 
             const defaultAccount = deployData.myWalletAddress;

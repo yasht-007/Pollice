@@ -91,7 +91,7 @@ const Register = () => {
           purpose: purpose,
         })
         .then((res) => {
-          if (res.status === 200) {
+          if (res.data.status === "ok") {
             setAlert({
               open: true,
               type: "success",
@@ -101,10 +101,22 @@ const Register = () => {
             });
 
             goHome("/");
+          } else {
+            setAlert({
+              open: true,
+              type: "error",
+              message: res.data.error,
+              time: 8000,
+            });
           }
         })
         .catch((err) => {
-          console.log(err);
+          setAlert({
+            open: true,
+            type: "error",
+            message: error.message,
+            time: 8000,
+          });
         });
     }
   }

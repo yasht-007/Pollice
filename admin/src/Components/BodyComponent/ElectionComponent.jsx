@@ -50,7 +50,7 @@ export default function ElectionComponent() {
     await axios
       .get("https://pollice-elections.herokuapp.com/api/admin/hosts")
       .then((res) => {
-        if (res.status === 200) {
+        if (res.data.status === "ok") {
           const hosts = res.data.hosts;
           setPosts({ data: hosts });
         }

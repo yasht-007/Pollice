@@ -70,7 +70,7 @@ export default function Candidates() {
         email: localStorage.getItem("email"),
       })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.data.status === "ok") {
           const cand = res.data.cand;
           setPosts({ data: cand.candidates });
         }
@@ -111,13 +111,16 @@ export default function Candidates() {
     //e.preventDefault();
 
     axios
-      .post("https://pollice-elections.herokuapp.com/api/host/deletecandidate", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        email: localStorage.getItem("email"),
-        walletAddress: cAddress,
-      })
+      .post(
+        "https://pollice-elections.herokuapp.com/api/host/deletecandidate",
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+          email: localStorage.getItem("email"),
+          walletAddress: cAddress,
+        }
+      )
       .then((res) => {
         if (res.data.status === "ok") {
           window.alert("Deleted!");
