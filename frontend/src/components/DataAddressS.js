@@ -7,9 +7,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     marginLeft: "25px",
     maxHeight: "22px",
-    "@media screen and (max-width: 768px)": {
-      display: "none",
-    },
   },
   paper: {
     backgroundColor: "#2e2e2e",

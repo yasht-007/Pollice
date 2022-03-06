@@ -130,14 +130,17 @@ const CampaignTable = () => {
         )
       ) {
         await axios
-          .post("https://pollice-elections.herokuapp.com/api/elections/registervoter", {
-            name: user.name,
-            email: user.email,
-            aadhar: user.aadharNumber,
-            electionId: row._id,
-            walletAddress: account.address,
-            approvalStatus: "Pending",
-          })
+          .post(
+            "https://pollice-elections.herokuapp.com/api/elections/registervoter",
+            {
+              name: user.name,
+              email: user.email,
+              aadhar: user.aadharNumber,
+              electionId: row._id,
+              walletAddress: account.address,
+              approvalStatus: "Pending",
+            }
+          )
           .then((res) => {
             if (res.data.status === "ok") {
               setAlert({
@@ -281,9 +284,9 @@ const CampaignTable = () => {
                                   : setAlert({
                                       open: true,
                                       message:
-                                        "Please first connect wallet or Register your account by clicking Register to vote button shown above",
+                                        "You are either not connected your wallet or you are not registered to our site or you are not allowed to vote for this election",
                                       type: "error",
-                                      time: 6000,
+                                      time: 8000,
                                     })
                               }
                             >

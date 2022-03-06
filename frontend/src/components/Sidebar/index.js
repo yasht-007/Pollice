@@ -7,8 +7,7 @@ import {
   getUserAddress,
 } from "../../config/web3Action";
 import { ElectionState } from "../../ElectionContext";
-import { ButtonOutlined, Buttonthird } from "../ButtonElement";
-import DataAddress from "../DataAddress";
+import DataAddress from "../DataAddressS";
 import {
   SidebarContainer,
   Icon,
@@ -94,29 +93,45 @@ const Sidebar = ({ isOpen, toggle }) => {
             Team
           </SidebarLink>
 
-          <div align="center">
+          <div
+            style={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             {account.wallet ? (
               <DataAddress address={account.address} />
             ) : (
-              <Buttonthird
-                to="/"
-                smooth={true}
-                duration={500}
-                spy={true}
-                exact="true"
-                offset={-80}
+              <div
+                style={{
+                  fontSize: "1.5rem",
+                  listStyle: "none",
+                  transition: "0.2 ease-in-out",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  color: "#fff",
+                }}
                 onClick={connectWallet}
-                primary="true"
-                dark="true"
               >
                 Connect
-              </Buttonthird>
+              </div>
             )}
-
             {account.wallet ? (
-              <ButtonOutlined to=" " onClick={disconnectWallet}>
-                Log out
-              </ButtonOutlined>
+              <div
+                style={{
+                  fontSize: "1.5rem",
+                  listStyle: "none",
+                  transition: "0.2 ease-in-out",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  color: "#fff",
+                }}
+                onClick={disconnectWallet}
+              >
+                Disconnect
+              </div>
             ) : null}
           </div>
         </SidebarMenu>
