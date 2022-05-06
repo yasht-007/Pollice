@@ -21,7 +21,7 @@ const ElectionHost = new mongoose.Schema(
       {
         type: Object,
         required: false,
-        unique: true,
+        unique: false,
         cId: { type: Number, required: false },
         name: { type: String, required: false },
         walletAddress: { type: String, required: false },
