@@ -14,6 +14,26 @@ const deployContract = require("./config/deploy");
 
 dotenv.config();
 connectDB();
+
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'https://pollice.netlify.app/');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
@@ -367,15 +387,12 @@ app.get("/api/elections", async (req, res) => {
       }
     );
 
-    res.header("Access-Control-Allow-Origin", "*");
-
     if (!elections || elections === null || elections.length === 0) {
       return res.json({ status: "error", error: "No elections found" });
     } else {
       return res.json({ status: "ok", elections: elections });
     }
   } catch (error) {
-    res.header("Access-Control-Allow-Origin", "*");
     return res.json({ status: "error", error: error.message });
   }
 });
