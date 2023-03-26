@@ -14,11 +14,7 @@ const deployContract = require("./config/deploy");
 
 dotenv.config();
 connectDB();
-
-app.use(cors({
-  origin: '*'
-}));
-
+app.use(cors());
 app.use(express.json());
 
 app.get("/", function (req, res) {
@@ -371,12 +367,15 @@ app.get("/api/elections", async (req, res) => {
       }
     );
 
+    res.header("Access-Control-Allow-Origin", "*");
+
     if (!elections || elections === null || elections.length === 0) {
       return res.json({ status: "error", error: "No elections found" });
     } else {
       return res.json({ status: "ok", elections: elections });
     }
   } catch (error) {
+    res.header("Access-Control-Allow-Origin", "*");
     return res.json({ status: "error", error: error.message });
   }
 });
