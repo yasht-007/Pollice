@@ -14,7 +14,11 @@ const deployContract = require("./config/deploy");
 
 dotenv.config();
 connectDB();
-app.use(cors());
+
+app.use(cors({
+  origin: 'https://pollice.netlify.app'
+}));
+
 app.use(express.json());
 
 app.get("/", function (req, res) {

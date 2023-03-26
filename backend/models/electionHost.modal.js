@@ -13,7 +13,7 @@ const ElectionHost = new mongoose.Schema(
     purpose: { type: String, required: true },
     address: { type: String, required: true },
     status: { type: String, required: true },
-    accessKey: { type: String, required: false, unique: true },
+    accessKey: { type: String, required: false},
     electionStatus: { type: String, required: false },
     eDeployDate: { type: String, required: false, default: "2022-02-30" },
     winnerWalletAddress: { type: String, required: false,default:"" },
@@ -21,7 +21,6 @@ const ElectionHost = new mongoose.Schema(
       {
         type: Object,
         required: false,
-        unique: false,
         cId: { type: Number, required: false },
         name: { type: String, required: false },
         walletAddress: { type: String, required: false },
@@ -33,7 +32,6 @@ const ElectionHost = new mongoose.Schema(
       {
         type: Object,
         required: false,
-        unique: true,
         name: { type: String, required: false },
         walletAddress: { type: String, required: false },
         appovalStatus: { type: String, required: false },
