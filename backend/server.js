@@ -16,7 +16,7 @@ dotenv.config();
 connectDB();
 
 app.use(cors({
-  origin: 'https://pollice.netlify.app'
+  origin: '*'
 }));
 
 app.use(express.json());
