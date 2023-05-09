@@ -32,6 +32,8 @@ const ElectionHost = new mongoose.Schema(
       {
         type: Object,
         required: false,
+        unique:true,
+        sparse:false,
         name: { type: String, required: false },
         walletAddress: { type: String, required: false },
         appovalStatus: { type: String, required: false },
