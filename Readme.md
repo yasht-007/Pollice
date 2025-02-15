@@ -1,9 +1,5 @@
 Live Web Application :- https://pollice.netlify.app/
 
-Team :-
-
-(1) Yash Tiwari(myself) (2) Preet Mungara
-
 Project Description :-
 
 Pollice (Pronounce it as Poll + ice) is MERN stack based Web app which is built on Ethereum/Polygon blockchain(Web3 project).The main concept behind Pollice is Online Polling where any School, College, Organization or even common people's can host their elections in a safe, secure & in a transparent way.Pollice is supported on both Ethereum as well as Polygon Blockchain.
