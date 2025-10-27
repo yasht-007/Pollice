@@ -13,7 +13,3 @@ Wallet:- Metamask.
 Steps to Host an Election :- https://pastebin.com/Q6z9Hr2j
 
 References:- (1) Code Eater(Youtube) (2) Dapp University(Youtube)
-
-LinkedIn profile:- https://www.linkedin.com/in/yash-tiwari-7113b5215/
-
-If you find any bug, errors or any problem please report it to me on Linkedin or you can email me at official.yasht@gmail.com
